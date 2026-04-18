@@ -1,0 +1,38 @@
+# Dependencies
+node_modules
+
+# Build output
+dist
+dist-ssr
+*.local
+
+# Vite
+.vite
+
+# Environment (keep example files if you add them)
+.env
+.env.*
+!.env.example
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor / IDE
+.idea
+*.swp
+*.swo
+*~
+
+# Optional tooling
+coverage
+*.tsbuildinfo
+.eslintcache
