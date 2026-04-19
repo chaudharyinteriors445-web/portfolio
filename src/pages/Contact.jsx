@@ -5,9 +5,9 @@ import PageTransition from '../components/PageTransition'
 import GoldDivider from '../components/GoldDivider'
 import SectionLabel from '../components/SectionLabel'
 
-const PHONE = '+91 98765 43210'
-const PHONE_CLEAN = '919876543210'
-const EMAIL = 'hello@nexoradev.in'
+const PHONE = '+91 93583 83671'
+const PHONE_CLEAN = '919358383671'
+const EMAIL = 'hello@nexoradevelopers.in'
 const WA_MSG = encodeURIComponent("Hi Nexora Developers! I'd like to discuss a web project with you.")
 
 const inputStyle = {

@@ -81,7 +81,7 @@ portfolio/
 Edit `src/pages/Contact.jsx`:
 ```js
 const PHONE = '+91 98765 43210'       // displayed phone number
-const PHONE_CLEAN = '919876543210'    // for wa.me and tel: links (no spaces/+)
+const PHONE_CLEAN = '+919358383671'    // for wa.me and tel: links (no spaces/+)
 const EMAIL = 'hello@aryanmehta.dev'
 ```
 

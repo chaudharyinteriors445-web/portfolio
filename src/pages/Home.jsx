@@ -177,18 +177,33 @@ export default function Home() {
         <Orbs />
         <Grid />
 
-        <motion.div style={{ position: 'relative', zIndex: 2, maxWidth: 1200, margin: '0 auto', padding: '0 48px', width: '100%', y: heroY, opacity: heroOpacity }}>
-          <motion.div variants={stagger} initial="hidden" animate="show">
-
-            <motion.div variants={fadeUp} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 16px', borderRadius: 50, background: 'rgba(108,58,255,0.1)', border: '1px solid var(--border)', marginBottom: '1.5rem' }}>
-              <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#22c55e', boxShadow: '0 0 8px #22c55e', display: 'inline-block' }} />
-              <span style={{ fontFamily: 'var(--font-ui)', fontSize: '0.72rem', letterSpacing: '0.12em', color: 'var(--muted)', textTransform: 'uppercase' }}>Available for new projects</span>
-            </motion.div>
+        <motion.div
+          className="hero-container"
+          style={{
+            position: 'relative', zIndex: 2, maxWidth: 1200, margin: '0 auto',
+            padding: '0 48px', width: '100%', y: heroY, opacity: heroOpacity,
+          }}
+        >
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            animate="show"
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'flex-start',
+              width: '100%',
+              textAlign: 'left',
+              /* Keeps headline / copy in the same vertical band as before (badge height + 1.5rem margin). */
+              paddingTop: 'clamp(2.25rem, 4.5vw, 3.5rem)',
+            }}
+          >
 
             <motion.h1 variants={fadeUp} style={{
               fontFamily: 'var(--font-display)', fontWeight: 800,
               fontSize: 'clamp(3.2rem, 9vw, 8.5rem)', lineHeight: 0.95,
               letterSpacing: '-0.03em', margin: '0 0 0.4em',
+              width: '100%', alignSelf: 'stretch',
             }}>
               <span style={{ display: 'block', color: 'var(--off-white)' }}>We Build</span>
               <span className="shimmer-text" style={{ display: 'block' }}>Websites</span>
@@ -197,7 +212,7 @@ export default function Home() {
 
             <GoldDivider />
 
-            <motion.p variants={fadeUp} style={{ maxWidth: 500, fontSize: '1.05rem', color: 'var(--muted)', lineHeight: 1.85, margin: '1rem 0 2.5rem', fontWeight: 300 }}>
+            <motion.p variants={fadeUp} style={{ maxWidth: 500, width: '100%', fontSize: '1.05rem', color: 'var(--muted)', lineHeight: 1.85, margin: '1rem 0 2.5rem', fontWeight: 300 }}>
               Nexora Developers craft premium, high-performance websites for businesses and individuals who demand the very best online presence — fast, beautiful, and built to convert.
             </motion.p>
 
@@ -390,7 +405,12 @@ export default function Home() {
         </div>
       </section>
 
-      <style>{`@media(max-width:768px){section.px-mobile{padding-left:20px!important;padding-right:20px!important;} section[style*="padding: '0 48px'"]{padding-left:20px!important;padding-right:20px!important;}}`}</style>
+      <style>{`
+        @media (max-width: 768px) {
+          .hero-container { padding-left: 20px !important; padding-right: 20px !important; }
+          section.px-mobile { padding-left: 20px !important; padding-right: 20px !important; }
+        }
+      `}</style>
     </PageTransition>
   )
 }

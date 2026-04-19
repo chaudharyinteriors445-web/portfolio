@@ -32,14 +32,29 @@ export default function Navbar() {
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         style={{
           position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
-          padding: scrolled ? '12px 48px' : '22px 48px',
+          paddingTop: scrolled ? 12 : 22,
+          paddingBottom: scrolled ? 12 : 22,
+          paddingLeft: 0,
+          paddingRight: 0,
           background: scrolled ? 'rgba(7,6,26,0.88)' : 'transparent',
           backdropFilter: scrolled ? 'blur(24px) saturate(180%)' : 'none',
           borderBottom: scrolled ? '1px solid var(--border)' : '1px solid transparent',
           transition: 'all 0.5s var(--ease-out-expo)',
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         }}
       >
+        <div
+          className="nav-inner"
+          style={{
+            maxWidth: 1200,
+            margin: '0 auto',
+            width: '100%',
+            paddingLeft: 48,
+            paddingRight: 48,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
         {/* Logo */}
         <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <Logo size={34} />
@@ -50,7 +65,21 @@ export default function Navbar() {
               background: 'linear-gradient(90deg, #fff 0%, #c0b0ff 100%)',
               WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
             }}>Nexora</span>
-            <span style={{ fontFamily: 'var(--font-ui)', fontSize: '0.6rem', color: 'var(--muted)', letterSpacing: '0.18em', display: 'block', textTransform: 'uppercase', marginTop: -2 }}>Developers</span>
+            <span style={{ 
+              fontFamily: 'var(--font-ui)', 
+              fontSize: '0.74rem', 
+              color: 'linear-gradient(90deg, #32c8ff 10%, #b099ff 100%)', 
+              letterSpacing: '0.18em', 
+              display: 'block', 
+              textTransform: 'uppercase', 
+              marginTop: -2,
+              background: 'linear-gradient(90deg, #32c8ff 10%, #b099ff 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent'
+            }}>
+              Developers
+            </span>
+       
           </div>
         </Link>
 
@@ -99,6 +128,7 @@ export default function Navbar() {
         }} className="mobile-toggle">
           {open ? <X size={22} /> : <Menu size={22} />}
         </button>
+        </div>
       </motion.nav>
 
       {/* Mobile menu overlay */}
@@ -137,7 +167,7 @@ export default function Navbar() {
 
       <style>{`
         @media (max-width: 900px) {
-          nav { padding-left: 24px !important; padding-right: 24px !important; }
+          .nav-inner { padding-left: 24px !important; padding-right: 24px !important; }
           .mobile-toggle { display: block !important; }
           .hide-mobile { display: none !important; }
         }
