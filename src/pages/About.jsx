@@ -12,11 +12,11 @@ export default function About() {
   return (
     <PageTransition>
       {/* Hero */}
-      <section style={{ padding: '10rem 48px 6rem', background: 'linear-gradient(180deg, var(--deep) 0%, var(--void) 100%)', borderBottom: '1px solid var(--border)' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '5rem', alignItems: 'center' }}>
+      <section style={{ padding: 'clamp(6.5rem, 16vw + 2.5rem, 10rem) var(--site-gutter) 6rem', background: 'linear-gradient(180deg, var(--deep) 0%, var(--void) 100%)', borderBottom: '1px solid var(--border)' }}>
+        <div className="about-hero-grid" style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '5rem', alignItems: 'center' }}>
           <motion.div initial={{ opacity: 0, x: -40 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, ease: [0.16,1,0.3,1] }}>
             <SectionLabel>About Nexora</SectionLabel>
-            <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(2.5rem,5vw,4.5rem)', lineHeight: 1.0, letterSpacing: '-0.03em', marginBottom: '1rem' }}>
+            <h1 className="display-hero" style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(1.875rem, 4vw + 1rem, 4.5rem)', lineHeight: 1.0, letterSpacing: '-0.03em', marginBottom: '1rem' }}>
               We Build for the<br /><span className="shimmer-text">Next Generation.</span>
             </h1>
             <GoldDivider />
@@ -39,7 +39,7 @@ export default function About() {
                 style={{ position: 'absolute', inset: -50, border: '1px dashed rgba(0,212,255,0.12)', borderRadius: '50%', pointerEvents: 'none' }}
               />
               <div style={{
-                width: 300, height: 340, borderRadius: 24, overflow: 'hidden',
+                width: 'min(300px, 100%)', maxWidth: '100%', height: 340, borderRadius: 24, overflow: 'hidden',
                 background: 'linear-gradient(135deg, rgba(108,58,255,0.15), rgba(0,212,255,0.08))',
                 border: '1px solid var(--border-bright)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -64,7 +64,7 @@ export default function About() {
       </section>
 
       {/* Values */}
-      <section style={{ padding: '6rem 48px', maxWidth: 1200, margin: '0 auto' }}>
+      <section style={{ padding: '6rem var(--site-gutter)', maxWidth: 1200, margin: '0 auto' }}>
         <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} style={{ marginBottom: '3.5rem' }}>
           <SectionLabel>Our Values</SectionLabel>
           <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(2rem,4vw,3rem)', lineHeight: 1.1 }}>The way we <span className="shimmer-text">work.</span></h2>
@@ -94,7 +94,7 @@ export default function About() {
       </section>
 
       {/* Skills */}
-      <section style={{ background: 'var(--deep)', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)', padding: '5rem 48px' }}>
+      <section style={{ background: 'var(--deep)', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)', padding: '5rem var(--site-gutter)' }}>
         <div style={{ maxWidth: 900, margin: '0 auto', textAlign: 'center' }}>
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
             <SectionLabel>Our Toolkit</SectionLabel>
@@ -114,7 +114,7 @@ export default function About() {
       </section>
 
       {/* CTA */}
-      <section style={{ padding: '6rem 48px', textAlign: 'center' }}>
+      <section style={{ padding: '6rem var(--site-gutter)', textAlign: 'center' }}>
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
           <Sparkles size={32} color="var(--violet-bright)" style={{ margin: '0 auto 1rem' }} />
           <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(2rem,4vw,3.5rem)', marginBottom: '1.5rem', lineHeight: 1.1 }}>
@@ -126,7 +126,11 @@ export default function About() {
           </div>
         </motion.div>
       </section>
-      <style>{`@media(max-width:768px){section{padding-left:20px!important;padding-right:20px!important;} section>div[style*="grid-template-columns: 1fr 1fr"]{grid-template-columns:1fr!important;gap:2.5rem!important;}}`}</style>
+      <style>{`
+        @media (max-width: 768px) {
+          .about-hero-grid { grid-template-columns: 1fr !important; gap: 2.5rem !important; }
+        }
+      `}</style>
     </PageTransition>
   )
 }

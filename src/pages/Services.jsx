@@ -21,11 +21,11 @@ export default function Services() {
   return (
     <PageTransition>
       {/* Hero */}
-      <section style={{ padding: '10rem 48px 5rem', background: 'linear-gradient(180deg, var(--deep) 0%, var(--void) 100%)', borderBottom: '1px solid var(--border)', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+      <section style={{ padding: 'clamp(6.5rem, 16vw + 2.5rem, 10rem) var(--site-gutter) 5rem', background: 'linear-gradient(180deg, var(--deep) 0%, var(--void) 100%)', borderBottom: '1px solid var(--border)', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 60% 70% at 50% 100%, rgba(108,58,255,0.08), transparent)', pointerEvents: 'none' }} />
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} style={{ position: 'relative' }}>
           <SectionLabel>Services</SectionLabel>
-          <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(2.5rem,7vw,6rem)', lineHeight: 0.95, letterSpacing: '-0.03em', marginBottom: '1.5rem' }}>
+          <h1 className="display-hero" style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(1.875rem, 5vw + 1rem, 6rem)', lineHeight: 0.95, letterSpacing: '-0.03em', marginBottom: '1.5rem' }}>
             Everything You Need<br /><span className="shimmer-text">To Go Online.</span>
           </h1>
           <GoldDivider center />
@@ -34,9 +34,9 @@ export default function Services() {
       </section>
 
       {/* Services grid */}
-      <section style={{ padding: '6rem 48px', maxWidth: 1200, margin: '0 auto' }}>
+      <section style={{ padding: '6rem var(--site-gutter)', maxWidth: 1200, margin: '0 auto' }}>
         <motion.div variants={stagger} initial="hidden" whileInView="show" viewport={{ once: true }}
-          style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.5rem' }}
+          style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '1.5rem' }}
         >
           {services.map(s => (
             <motion.div key={s.title} variants={fadeUp}
@@ -68,7 +68,7 @@ export default function Services() {
       </section>
 
       {/* Process */}
-      <section style={{ background: 'var(--deep)', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)', padding: '6rem 48px' }}>
+      <section style={{ background: 'var(--deep)', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)', padding: '6rem var(--site-gutter)' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
           <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} style={{ marginBottom: '4rem', textAlign: 'center' }}>
             <SectionLabel>Our Process</SectionLabel>
@@ -96,7 +96,7 @@ export default function Services() {
       </section>
 
       {/* CTA */}
-      <section style={{ padding: '6rem 48px', textAlign: 'center' }}>
+      <section style={{ padding: '6rem var(--site-gutter)', textAlign: 'center' }}>
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
           <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(2rem,4vw,3rem)', marginBottom: '1.5rem', lineHeight: 1.1 }}>
             Not sure which service?<br /><span className="shimmer-text">Let's figure it out together.</span>
@@ -114,7 +114,6 @@ export default function Services() {
           </Link>
         </motion.div>
       </section>
-      <style>{`@media(max-width:768px){section{padding-left:20px!important;padding-right:20px!important;}}`}</style>
     </PageTransition>
   )
 }

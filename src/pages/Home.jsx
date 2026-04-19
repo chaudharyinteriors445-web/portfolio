@@ -173,7 +173,7 @@ export default function Home() {
       <CursorGlow />
 
       {/* ── HERO ── */}
-      <section ref={heroRef} style={{ minHeight: '100vh', position: 'relative', display: 'flex', alignItems: 'center', overflow: 'hidden', background: 'var(--void)' }}>
+      <section ref={heroRef} style={{ minHeight: '100vh', position: 'relative', display: 'flex', alignItems: 'center', overflow: 'hidden', overflowX: 'hidden', background: 'var(--void)' }}>
         <Orbs />
         <Grid />
 
@@ -181,7 +181,8 @@ export default function Home() {
           className="hero-container"
           style={{
             position: 'relative', zIndex: 2, maxWidth: 1200, margin: '0 auto',
-            padding: '0 48px', width: '100%', y: heroY, opacity: heroOpacity,
+            padding: '0 var(--site-gutter)', width: '100%', minWidth: 0, boxSizing: 'border-box',
+            y: heroY, opacity: heroOpacity,
           }}
         >
           <motion.div
@@ -193,15 +194,16 @@ export default function Home() {
               flexDirection: 'column',
               alignItems: 'flex-start',
               width: '100%',
+              minWidth: 0,
               textAlign: 'left',
               /* Keeps headline / copy in the same vertical band as before (badge height + 1.5rem margin). */
               paddingTop: 'clamp(2.25rem, 4.5vw, 3.5rem)',
             }}
           >
 
-            <motion.h1 variants={fadeUp} style={{
+            <motion.h1 variants={fadeUp} className="display-hero" style={{
               fontFamily: 'var(--font-display)', fontWeight: 800,
-              fontSize: 'clamp(3.2rem, 9vw, 8.5rem)', lineHeight: 0.95,
+              fontSize: 'clamp(1.875rem, 6.5vw + 0.65rem, 8.5rem)', lineHeight: 0.95,
               letterSpacing: '-0.03em', margin: '0 0 0.4em',
               width: '100%', alignSelf: 'stretch',
             }}>
@@ -275,6 +277,7 @@ export default function Home() {
 
         {/* Scroll indicator */}
         <motion.div animate={{ y: [0, 10, 0] }} transition={{ repeat: Infinity, duration: 2 }}
+          className="hero-scroll-hint"
           style={{ position: 'absolute', bottom: 32, left: '50%', transform: 'translateX(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, color: 'var(--muted)', zIndex: 3 }}>
           <span style={{ fontFamily: 'var(--font-ui)', fontSize: '0.65rem', letterSpacing: '0.15em', textTransform: 'uppercase' }}>Scroll</span>
           <ChevronDown size={18} />
@@ -285,9 +288,9 @@ export default function Home() {
       <Marquee />
 
       {/* ── STATS ── */}
-      <section style={{ padding: '6rem 48px', background: 'var(--deep)', position: 'relative', overflow: 'hidden' }}>
+      <section style={{ padding: '6rem var(--site-gutter)', background: 'var(--deep)', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: 800, height: 400, background: 'radial-gradient(ellipse, rgba(108,58,255,0.06), transparent 70%)', pointerEvents: 'none' }} />
-        <div style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '2rem', position: 'relative' }}>
+        <div className="home-stats-grid" style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '2rem', position: 'relative' }}>
           {[
             { n: 50, suf: '+', label: 'Projects Delivered', icon: TrendingUp },
             { n: 100, suf: '%', label: 'Client Satisfaction', icon: Star },
@@ -308,11 +311,10 @@ export default function Home() {
             </motion.div>
           ))}
         </div>
-        <style>{`@media(max-width:768px){section>div[style*="grid-template-columns: repeat(4, 1fr)"]{grid-template-columns:repeat(2,1fr)!important;}}`}</style>
       </section>
 
       {/* ── SERVICES TEASER ── */}
-      <section style={{ padding: '7rem 48px', maxWidth: 1200, margin: '0 auto' }}>
+      <section style={{ padding: '7rem var(--site-gutter)', maxWidth: 1200, margin: '0 auto' }}>
         <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} style={{ marginBottom: '4rem' }}>
           <SectionLabel>What We Do</SectionLabel>
           <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(2rem,4vw,3.5rem)', lineHeight: 1.1, maxWidth: 600 }}>
@@ -340,7 +342,7 @@ export default function Home() {
       </section>
 
       {/* ── WORK TEASER ── */}
-      <section style={{ padding: '2rem 48px 7rem', maxWidth: 1200, margin: '0 auto' }}>
+      <section style={{ padding: '2rem var(--site-gutter) 7rem', maxWidth: 1200, margin: '0 auto' }}>
         <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} style={{ marginBottom: '3rem', display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
           <div>
             <SectionLabel>Recent Work</SectionLabel>
@@ -348,7 +350,7 @@ export default function Home() {
           </div>
           <Link to="/work"><motion.button whileHover={{ scale: 1.04 }} style={{ padding: '0.7rem 1.6rem', background: 'var(--raised)', border: '1px solid var(--border)', borderRadius: 50, cursor: 'pointer', color: 'var(--muted)', fontFamily: 'var(--font-ui)', fontSize: '0.78rem', fontWeight: 500, display: 'flex', alignItems: 'center', gap: 8 }}>View All Work <ArrowRight size={13} /></motion.button></Link>
         </motion.div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+        <div className="home-work-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
           {[
             { name: 'Home Root Farms', type: 'E-commerce · Atta & Grains', emoji: '🌾', color: 'rgba(251,191,36,0.1)', accent: '#fbbf24', url: 'https://homerootfarms.onrender.com/', desc: 'Premium flour & ancient grain e-commerce platform' },
             { name: 'PackFolio', type: 'B2B · Packaging Supplier', emoji: '📦', color: 'rgba(99,102,241,0.1)', accent: '#818cf8', url: 'https://packfolio-1.onrender.com/', desc: 'Professional packaging supplier showcase website' },
@@ -376,19 +378,18 @@ export default function Home() {
             </motion.a>
           ))}
         </div>
-        <style>{`@media(max-width:600px){section>div[style*="grid-template-columns: 1fr 1fr"]{grid-template-columns:1fr!important;}}`}</style>
       </section>
 
       {/* ── CTA BAND ── */}
-      <section style={{ margin: '0 48px 6rem', borderRadius: 24, overflow: 'hidden', position: 'relative' }}>
-        <div style={{ background: 'linear-gradient(135deg, var(--raised) 0%, #0d0c36 100%)', padding: '6rem 4rem', textAlign: 'center', border: '1px solid var(--border-bright)', position: 'relative' }}>
+      <section className="home-cta-outer" style={{ margin: '0 var(--site-gutter) 6rem', borderRadius: 24, overflow: 'hidden', position: 'relative' }}>
+        <div className="home-cta-inner" style={{ background: 'linear-gradient(135deg, var(--raised) 0%, #0d0c36 100%)', padding: '6rem clamp(1.25rem, 5vw, 4rem)', textAlign: 'center', border: '1px solid var(--border-bright)', position: 'relative' }}>
           <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 60% 80% at 50% 50%, rgba(108,58,255,0.12), transparent)', pointerEvents: 'none' }} />
           {/* Animated ring */}
           <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: 400, height: 400, borderRadius: '50%', border: '1px solid rgba(108,58,255,0.12)', animation: 'pulse-glow 3s ease-in-out infinite', pointerEvents: 'none' }} />
           <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: 600, height: 600, borderRadius: '50%', border: '1px solid rgba(108,58,255,0.06)', animation: 'pulse-glow 3s ease-in-out infinite 1s', pointerEvents: 'none' }} />
           <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} style={{ position: 'relative', zIndex: 1 }}>
             <p style={{ fontFamily: 'var(--font-ui)', fontSize: '0.72rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--violet-bright)', marginBottom: '1rem' }}>Ready to launch?</p>
-            <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(2rem,5vw,4rem)', lineHeight: 1.1, marginBottom: '1.5rem' }}>
+            <h2 className="display-hero" style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(2rem,5vw,4rem)', lineHeight: 1.1, marginBottom: '1.5rem' }}>
               Your business deserves<br /><span className="shimmer-text">to be found online.</span>
             </h2>
             <p style={{ color: 'var(--muted)', maxWidth: 420, margin: '0 auto 2.5rem', lineHeight: 1.8, fontSize: '0.95rem' }}>No jargon, no delays. Just a stunning website delivered on time — and a partner you can trust long-term.</p>
@@ -407,7 +408,14 @@ export default function Home() {
 
       <style>{`
         @media (max-width: 768px) {
-          .hero-container { padding-left: 20px !important; padding-right: 20px !important; }
+          .hero-scroll-hint {
+            left: max(1rem, env(safe-area-inset-left, 0px)) !important;
+            transform: none !important;
+            align-items: flex-start !important;
+          }
+          .home-stats-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 1rem !important; }
+          .home-work-grid { grid-template-columns: 1fr !important; }
+          .home-cta-outer { margin-left: 1rem !important; margin-right: 1rem !important; }
           section.px-mobile { padding-left: 20px !important; padding-right: 20px !important; }
         }
       `}</style>

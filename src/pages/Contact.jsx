@@ -34,11 +34,11 @@ export default function Contact() {
   return (
     <PageTransition>
       {/* Hero */}
-      <section style={{ padding: '10rem 48px 5rem', background: 'linear-gradient(180deg, var(--deep) 0%, var(--void) 100%)', borderBottom: '1px solid var(--border)', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+      <section style={{ padding: 'clamp(6.5rem, 16vw + 2.5rem, 10rem) var(--site-gutter) 5rem', background: 'linear-gradient(180deg, var(--deep) 0%, var(--void) 100%)', borderBottom: '1px solid var(--border)', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 60% 60% at 50% 100%, rgba(108,58,255,0.1), transparent)', pointerEvents: 'none' }} />
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} style={{ position: 'relative' }}>
           <SectionLabel>Get In Touch</SectionLabel>
-          <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(2.5rem,7vw,6rem)', lineHeight: 0.95, letterSpacing: '-0.03em', marginBottom: '1.5rem' }}>
+          <h1 className="display-hero" style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(1.875rem, 5vw + 1rem, 6rem)', lineHeight: 0.95, letterSpacing: '-0.03em', marginBottom: '1.5rem' }}>
             Let's Build Your<br /><span className="shimmer-text">Dream Website.</span>
           </h1>
           <GoldDivider center />
@@ -47,7 +47,7 @@ export default function Contact() {
       </section>
 
       {/* Quick CTAs */}
-      <section style={{ padding: '3rem 48px', background: 'var(--deep)', borderBottom: '1px solid var(--border)' }}>
+      <section style={{ padding: '3rem var(--site-gutter)', background: 'var(--deep)', borderBottom: '1px solid var(--border)' }}>
         <div style={{ maxWidth: 900, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
           {/* WhatsApp */}
           <motion.a href={`https://wa.me/${PHONE_CLEAN}?text=${WA_MSG}`} target="_blank" rel="noopener noreferrer"
@@ -79,7 +79,7 @@ export default function Contact() {
       </section>
 
       {/* Form + Sidebar */}
-      <section style={{ padding: '6rem 48px', maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 360px', gap: '4rem', alignItems: 'flex-start' }}>
+      <section className="contact-split" style={{ padding: '6rem var(--site-gutter)', maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr min(360px, 100%)', gap: '4rem', alignItems: 'flex-start' }}>
         {/* Form */}
         <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
           <SectionLabel>Tell Us About Your Project</SectionLabel>
@@ -99,7 +99,7 @@ export default function Contact() {
             </motion.div>
           ) : (
             <form onSubmit={submit} style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <div className="contact-form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 {[{ n: 'name', l: 'Your Name', p: 'Rahul Sharma' }, { n: 'email', l: 'Email Address', p: 'rahul@example.com', t: 'email' }].map(f => (
                   <div key={f.n}>
                     <label style={{ display: 'block', fontFamily: 'var(--font-ui)', fontSize: '0.72rem', color: 'var(--muted)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>{f.l} *</label>
@@ -111,7 +111,7 @@ export default function Contact() {
                   </div>
                 ))}
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <div className="contact-form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 {[
                   { n: 'service', l: 'Service Needed', opts: ['Business Website', 'Landing Page', 'Portfolio Site', 'Redesign', 'SEO & Speed', 'Maintenance', 'Not Sure'] },
                   { n: 'budget', l: 'Your Budget', opts: ['Under ₹5,000', '₹5,000–₹10,000', '₹10,000–₹20,000', '₹20,000+', 'Let\'s discuss'] },
@@ -178,11 +178,10 @@ export default function Contact() {
         </motion.div>
       </section>
       <style>{`
-        @media(max-width:768px){
-          section{padding-left:20px!important;padding-right:20px!important;}
-          section>div[style*="grid-template-columns: 1fr 360px"]{grid-template-columns:1fr!important;gap:2.5rem!important;}
-          div[style*="grid-template-columns: 1fr 1fr"][style*="gap: 1rem"]{grid-template-columns:1fr!important;}
-          input,textarea,select{font-size:16px!important;}
+        @media (max-width: 768px) {
+          .contact-split { grid-template-columns: 1fr !important; gap: 2.5rem !important; }
+          .contact-form-row { grid-template-columns: 1fr !important; }
+          input, textarea, select { font-size: 16px !important; }
         }
       `}</style>
     </PageTransition>

@@ -1,6 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Outfit:wght@200;300;400;500;600&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
 
 :root {
+  /* Horizontal padding aligned with nav / page sections */
+  --site-gutter: clamp(1rem, 4vw, 3rem);
   --void: #03020a;
   --deep: #07061a;
   --surface: #0d0c24;
@@ -24,6 +26,25 @@
   --font-ui: 'Space Grotesk', sans-serif;
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+@media (min-width: 769px) {
+  :root {
+    --site-gutter: 48px;
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --site-gutter: 1.25rem;
+  }
+}
+
+/* Large Syne headlines: avoid clipping / horizontal overflow on narrow viewports */
+.display-hero {
+  overflow-wrap: break-word;
+  word-break: break-word;
+  max-width: 100%;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -106,3 +127,4 @@ body::before {
   .hide-mobile { display: none !important; }
   .px-mobile { padding-left: 20px !important; padding-right: 20px !important; }
 }
+

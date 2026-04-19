@@ -5,7 +5,7 @@ import { MessageCircle, Phone } from 'lucide-react'
 export default function Footer() {
   const year = new Date().getFullYear()
   return (
-    <footer style={{ background: 'var(--deep)', borderTop: '1px solid var(--border)', padding: '4rem 48px 2rem' }}>
+    <footer style={{ background: 'var(--deep)', borderTop: '1px solid var(--border)', padding: `4rem var(--site-gutter) 2rem` }}>
       <div style={{ maxWidth: 1200, margin: '0 auto' }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr 1fr 1fr', gap: '3rem', marginBottom: '3rem' }}>
           {/* Brand */}
@@ -54,7 +54,7 @@ export default function Footer() {
           <p style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>Crafted with precision &amp; purpose · India</p>
         </div>
       </div>
-      <style>{`@media(max-width:768px){footer{padding-left:20px!important;padding-right:20px!important;} footer>div>div:first-child{grid-template-columns:1fr!important;}}`}</style>
+      <style>{`@media(max-width:768px){footer>div>div:first-child{grid-template-columns:1fr!important;}}`}</style>
     </footer>
   )
 }

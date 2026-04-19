@@ -239,11 +239,11 @@ export default function Work() {
       <AnimatePresence>{selected && <ProjectModal project={selected} onClose={() => setSelected(null)} />}</AnimatePresence>
 
       {/* Hero */}
-      <section style={{ padding: '10rem 48px 5rem', background: 'linear-gradient(180deg, var(--deep) 0%, var(--void) 100%)', borderBottom: '1px solid var(--border)', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+      <section style={{ padding: 'clamp(6.5rem, 16vw + 2.5rem, 10rem) var(--site-gutter) 5rem', background: 'linear-gradient(180deg, var(--deep) 0%, var(--void) 100%)', borderBottom: '1px solid var(--border)', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: 600, height: 400, background: 'radial-gradient(ellipse, rgba(108,58,255,0.1), transparent 70%)', pointerEvents: 'none' }} />
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} style={{ position: 'relative' }}>
           <SectionLabel>Our Portfolio</SectionLabel>
-          <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(2.8rem, 7vw, 6rem)', lineHeight: 0.95, letterSpacing: '-0.03em', marginBottom: '1.5rem' }}>
+          <h1 className="display-hero" style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(1.875rem, 5vw + 1rem, 6rem)', lineHeight: 0.95, letterSpacing: '-0.03em', marginBottom: '1.5rem' }}>
             Work We're<br /><span className="shimmer-text">Proud Of.</span>
           </h1>
           <GoldDivider center />
@@ -252,7 +252,7 @@ export default function Work() {
       </section>
 
       {/* Filter tabs */}
-      <section style={{ padding: '2.5rem 48px', borderBottom: '1px solid var(--border)', background: 'var(--deep)' }}>
+      <section style={{ padding: '2.5rem var(--site-gutter)', borderBottom: '1px solid var(--border)', background: 'var(--deep)' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', gap: '0.75rem', flexWrap: 'wrap', justifyContent: 'center' }}>
           {categories.map(cat => (
             <motion.button key={cat} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
@@ -272,11 +272,11 @@ export default function Work() {
       </section>
 
       {/* Projects grid */}
-      <section style={{ padding: '5rem 48px', maxWidth: 1200, margin: '0 auto' }}>
+      <section style={{ padding: '5rem var(--site-gutter)', maxWidth: 1200, margin: '0 auto' }}>
         <AnimatePresence mode="wait">
           <motion.div key={filter}
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.5rem' }}
+            style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 280px), 1fr))', gap: '1.5rem' }}
           >
             {filtered.map(p => <ProjectCard key={p.id} project={p} onClick={() => setSelected(p)} />)}
           </motion.div>
@@ -284,13 +284,13 @@ export default function Work() {
       </section>
 
       {/* Testimonials */}
-      <section style={{ background: 'var(--deep)', borderTop: '1px solid var(--border)', padding: '6rem 48px' }}>
+      <section style={{ background: 'var(--deep)', borderTop: '1px solid var(--border)', padding: '6rem var(--site-gutter)' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} style={{ textAlign: 'center', marginBottom: '4rem' }}>
             <SectionLabel>Client Voices</SectionLabel>
             <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(2rem,4vw,3rem)' }}>What Our Clients Say</h2>
           </motion.div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))', gap: '1.5rem' }}>
             {testimonials.map((t, i) => (
               <motion.div key={t.name}
                 initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
@@ -311,7 +311,7 @@ export default function Work() {
       </section>
 
       {/* CTA */}
-      <section style={{ padding: '6rem 48px', textAlign: 'center' }}>
+      <section style={{ padding: '6rem var(--site-gutter)', textAlign: 'center' }}>
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
           <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(2rem,4vw,3.5rem)', marginBottom: '1.5rem', lineHeight: 1.1 }}>
             Want results like these?<br /><span className="shimmer-text">Let's make it happen.</span>
@@ -329,7 +329,6 @@ export default function Work() {
           </Link>
         </motion.div>
       </section>
-      <style>{`@media(max-width:768px){section{padding-left:20px!important;padding-right:20px!important;}}`}</style>
     </PageTransition>
   )
 }
