@@ -1,4 +1,4 @@
-# Aryan Mehta — Freelance Web Developer Portfolio
+# Nexora Developers — Freelance Web Developer Portfolio
 
 A premium, modern portfolio website built with **React + Vite + Framer Motion**.
 
