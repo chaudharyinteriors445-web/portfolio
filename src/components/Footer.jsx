@@ -32,7 +32,7 @@ export default function Footer() {
           {[
             { title: 'Pages', items: [['/', 'Home'], ['/services', 'Services'], ['/about', 'About'], ['/work', 'Work'], ['/contact', 'Contact']] },
             { title: 'Services', items: [['#','Business Websites'], ['#','Landing Pages'], ['#','Portfolios'], ['#','Redesigns'], ['#','SEO & Speed']] },
-            { title: 'Contact', items: [['tel:+919358383671','+91 93583 83671'], ['mailto:hello@nexoradevelopers.in','hello@nexoradevelopers.in'], ['#','India (Remote-Friendly)']] },
+            { title: 'Contact', items: [['tel:+919358383671','+91 93583 83671'], ['mailto:nexoraadevelopers@gmail.com','nexoraadevelopers@gmail.com'], ['#','India (Remote-Friendly)']] },
           ].map(col => (
             <div key={col.title}>
               <p style={{ fontFamily: 'var(--font-ui)', fontSize: '0.72rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--violet-bright)', marginBottom: '1rem', fontWeight: 600 }}>{col.title}</p>

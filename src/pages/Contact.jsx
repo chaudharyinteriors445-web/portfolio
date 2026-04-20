@@ -7,7 +7,7 @@ import SectionLabel from '../components/SectionLabel'
 
 const PHONE = '+91 93583 83671'
 const PHONE_CLEAN = '919358383671'
-const EMAIL = 'hello@nexoradevelopers.in'
+const EMAIL = 'nexoraadevelopers@gmail.com'
 const WA_MSG = encodeURIComponent("Hi Nexora Developers! I'd like to discuss a web project with you.")
 
 const inputStyle = {
