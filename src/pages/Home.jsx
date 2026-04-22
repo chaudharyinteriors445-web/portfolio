@@ -295,7 +295,7 @@ export default function Home() {
             { n: 50, suf: '+', label: 'Projects Delivered', icon: TrendingUp },
             { n: 100, suf: '%', label: 'Client Satisfaction', icon: Star },
             { n: 7, suf: ' Days', label: 'Avg. Delivery', icon: Zap },
-            { n: 1, suf: ' Years', label: 'In Business', icon: Globe },
+            { n: 1, suf: ' Year', label: 'In Business', icon: Globe },
           ].map((s, i) => (
             <motion.div key={s.label}
               initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
