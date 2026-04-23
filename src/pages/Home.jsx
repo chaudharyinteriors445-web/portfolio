@@ -1,71 +1,102 @@
-import { useEffect, useRef, useState } from 'react'
-import { motion, useScroll, useTransform, useSpring, AnimatePresence } from 'framer-motion'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, Globe, Zap, Shield, ChevronDown, Star, TrendingUp, Code, Layers } from 'lucide-react'
-import PageTransition from '../components/PageTransition'
-import GoldDivider from '../components/GoldDivider'
-import SectionLabel from '../components/SectionLabel'
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useSpring,
+  useInView,
+  AnimatePresence,
+} from 'framer-motion'
+import {
+  ArrowRight,
+  Zap,
+  Globe,
+  Layers,
+  Sparkles,
+  TrendingUp,
+  Code2,
+  Palette,
+  Rocket,
+  ChevronDown,
+  Star,
+  Shield,
+  Clock,
+  Users,
+  ExternalLink,
+  Play,
+} from 'lucide-react'
 
-/* ── Magnetic button hook ─────────────────────────────────── */
-function useMagnet(strength = 0.4) {
-  const ref = useRef(null)
-  const x = useSpring(0, { stiffness: 200, damping: 20 })
-  const y = useSpring(0, { stiffness: 200, damping: 20 })
-  useEffect(() => {
-    const el = ref.current; if (!el) return
-    const move = e => {
-      const r = el.getBoundingClientRect()
-      const dx = e.clientX - (r.left + r.width / 2)
-      const dy = e.clientY - (r.top + r.height / 2)
-      x.set(dx * strength); y.set(dy * strength)
-    }
-    const leave = () => { x.set(0); y.set(0) }
-    el.addEventListener('mousemove', move)
-    el.addEventListener('mouseleave', leave)
-    return () => { el.removeEventListener('mousemove', move); el.removeEventListener('mouseleave', leave) }
-  }, [])
-  return { ref, x, y }
-}
-
-/* ── Cursor follower ──────────────────────────────────────── */
+/* ─────────────────────────────────────────────
+   CURSOR GLOW
+───────────────────────────────────────────── */
 function CursorGlow() {
   const [pos, setPos] = useState({ x: -200, y: -200 })
+  const [visible, setVisible] = useState(false)
+
   useEffect(() => {
-    const h = e => setPos({ x: e.clientX, y: e.clientY })
-    window.addEventListener('mousemove', h)
-    return () => window.removeEventListener('mousemove', h)
-  }, [])
+    const move = (e) => {
+      setPos({ x: e.clientX, y: e.clientY })
+      if (!visible) setVisible(true)
+    }
+    const leave = () => setVisible(false)
+    window.addEventListener('mousemove', move)
+    window.addEventListener('mouseleave', leave)
+    return () => {
+      window.removeEventListener('mousemove', move)
+      window.removeEventListener('mouseleave', leave)
+    }
+  }, [visible])
+
   return (
     <motion.div
-      animate={{ x: pos.x - 200, y: pos.y - 200 }}
-      transition={{ type: 'spring', stiffness: 80, damping: 25 }}
+      animate={{ x: pos.x - 200, y: pos.y - 200, opacity: visible ? 1 : 0 }}
+      transition={{ type: 'spring', stiffness: 80, damping: 20, mass: 0.5 }}
       style={{
-        position: 'fixed', width: 400, height: 400, borderRadius: '50%',
-        background: 'radial-gradient(circle, rgba(108,58,255,0.08) 0%, transparent 70%)',
-        pointerEvents: 'none', zIndex: 1, top: 0, left: 0,
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: 400,
+        height: 400,
+        borderRadius: '50%',
+        background:
+          'radial-gradient(circle, rgba(124,58,255,0.12) 0%, rgba(0,229,255,0.04) 50%, transparent 70%)',
+        pointerEvents: 'none',
+        zIndex: 1,
+        mixBlendMode: 'screen',
       }}
     />
   )
 }
 
-/* ── Floating orbs ────────────────────────────────────────── */
-function Orbs() {
+/* ─────────────────────────────────────────────
+   FLOATING ORBS
+───────────────────────────────────────────── */
+function FloatingOrbs() {
+  const orbs = [
+    { w: 600, h: 600, top: '-10%', left: '-15%', color: 'rgba(124,58,255,0.18)', blur: 120, delay: 0, dur: 18 },
+    { w: 500, h: 500, top: '20%', right: '-10%', color: 'rgba(0,229,255,0.12)', blur: 100, delay: 3, dur: 22 },
+    { w: 400, h: 400, bottom: '10%', left: '20%', color: 'rgba(245,200,66,0.08)', blur: 80, delay: 6, dur: 26 },
+    { w: 350, h: 350, top: '55%', right: '25%', color: 'rgba(124,58,255,0.1)', blur: 90, delay: 2, dur: 20 },
+  ]
   return (
     <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
-      {[
-        { x: '65%', y: '10%', size: 500, color: 'rgba(108,58,255,0.12)', delay: 0, dur: 8 },
-        { x: '-5%', y: '50%', size: 350, color: 'rgba(0,212,255,0.07)', delay: 2, dur: 10 },
-        { x: '80%', y: '60%', size: 280, color: 'rgba(108,58,255,0.08)', delay: 4, dur: 7 },
-        { x: '30%', y: '80%', size: 200, color: 'rgba(0,212,255,0.05)', delay: 1, dur: 12 },
-      ].map((o, i) => (
-        <motion.div key={i}
-          animate={{ y: [0, -30, 10, 0], scale: [1, 1.05, 0.97, 1] }}
+      {orbs.map((o, i) => (
+        <motion.div
+          key={i}
+          animate={{ y: [0, -30, 15, 0], x: [0, 15, -10, 0], scale: [1, 1.08, 0.96, 1] }}
           transition={{ duration: o.dur, delay: o.delay, repeat: Infinity, ease: 'easeInOut' }}
           style={{
-            position: 'absolute', left: o.x, top: o.y,
-            width: o.size, height: o.size, borderRadius: '50%',
+            position: 'absolute',
+            width: o.w,
+            height: o.h,
+            top: o.top,
+            left: o.left,
+            right: o.right,
+            bottom: o.bottom,
+            borderRadius: '50%',
             background: `radial-gradient(circle, ${o.color}, transparent 70%)`,
-            filter: 'blur(40px)',
+            filter: `blur(${o.blur}px)`,
           }}
         />
       ))}
@@ -73,352 +104,1230 @@ function Orbs() {
   )
 }
 
-/* ── Animated grid background ────────────────────────────── */
-function Grid() {
+/* ─────────────────────────────────────────────
+   ANIMATED GRID BACKGROUND
+───────────────────────────────────────────── */
+function AnimatedGrid() {
   return (
-    <div style={{
-      position: 'absolute', inset: 0, pointerEvents: 'none',
-      backgroundImage: `
-        linear-gradient(rgba(108,58,255,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(108,58,255,0.04) 1px, transparent 1px)
-      `,
-      backgroundSize: '60px 60px',
-      maskImage: 'radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 100%)',
-    }} />
+    <div
+      style={{
+        position: 'absolute',
+        inset: 0,
+        backgroundImage: `
+          linear-gradient(rgba(124,58,255,0.04) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(124,58,255,0.04) 1px, transparent 1px)
+        `,
+        backgroundSize: '60px 60px',
+        maskImage: 'radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 100%)',
+        WebkitMaskImage: 'radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 100%)',
+        pointerEvents: 'none',
+      }}
+    />
   )
 }
 
-/* ── Marquee strip ────────────────────────────────────────── */
-function Marquee() {
-  const items = ['Business Websites', 'Landing Pages', 'E-commerce', 'Portfolios', 'SEO Optimization', 'Brand Identity', 'Web Apps', 'Redesigns']
+/* ─────────────────────────────────────────────
+   MARQUEE STRIP
+───────────────────────────────────────────── */
+const marqueeItems = [
+  { icon: Zap, label: 'Lightning Fast' },
+  { icon: Globe, label: 'Global Ready' },
+  { icon: Layers, label: 'Pixel Perfect' },
+  { icon: Sparkles, label: 'Premium Design' },
+  { icon: TrendingUp, label: 'SEO Optimised' },
+  { icon: Shield, label: 'Secure & Reliable' },
+  { icon: Rocket, label: 'Launch Ready' },
+  { icon: Star, label: 'Award Worthy' },
+]
+
+function MarqueeStrip() {
+  const doubled = [...marqueeItems, ...marqueeItems]
   return (
-    <div style={{ overflow: 'hidden', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)', background: 'var(--deep)', padding: '14px 0' }}>
-      <div style={{ display: 'flex', animation: 'marquee 22s linear infinite', width: 'max-content' }}>
-        {[...items, ...items, ...items].map((item, i) => (
-          <span key={i} style={{ fontFamily: 'var(--font-ui)', fontSize: '0.75rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--muted)', whiteSpace: 'nowrap', padding: '0 2.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            {item}
-            <span style={{ width: 4, height: 4, borderRadius: '50%', background: 'var(--violet)', display: 'inline-block', flexShrink: 0, boxShadow: '0 0 6px var(--violet)' }} />
-          </span>
+    <div
+      style={{
+        overflow: 'hidden',
+        borderTop: '1px solid var(--border)',
+        borderBottom: '1px solid var(--border)',
+        background: 'rgba(124,58,255,0.03)',
+        padding: '14px 0',
+        position: 'relative',
+        zIndex: 2,
+      }}
+    >
+      {/* fade edges */}
+      <div style={{
+        position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none',
+        background: 'linear-gradient(90deg, var(--void) 0%, transparent 8%, transparent 92%, var(--void) 100%)',
+      }} />
+      <motion.div
+        animate={{ x: ['0%', '-50%'] }}
+        transition={{ duration: 28, repeat: Infinity, ease: 'linear' }}
+        style={{ display: 'flex', gap: '3rem', width: 'max-content' }}
+      >
+        {doubled.map(({ icon: Icon, label }, i) => (
+          <div
+            key={i}
+            style={{
+              display: 'flex', alignItems: 'center', gap: 10,
+              whiteSpace: 'nowrap', flexShrink: 0,
+            }}
+          >
+            <div style={{
+              width: 28, height: 28, borderRadius: 8,
+              background: 'rgba(124,58,255,0.15)',
+              border: '1px solid rgba(124,58,255,0.25)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}>
+              <Icon size={13} color="var(--violet-bright)" />
+            </div>
+            <span style={{
+              fontFamily: 'var(--font-ui)', fontSize: '0.78rem',
+              fontWeight: 500, letterSpacing: '0.06em',
+              color: 'var(--muted)', textTransform: 'uppercase',
+            }}>{label}</span>
+            <span style={{ color: 'var(--border-bright)', marginLeft: 8, fontSize: '0.6rem' }}>✦</span>
+          </div>
         ))}
-      </div>
+      </motion.div>
     </div>
   )
 }
 
-/* ── Counter animation ───────────────────────────────────── */
-function Counter({ to, suffix = '' }) {
+/* ─────────────────────────────────────────────
+   COUNTER ANIMATION
+───────────────────────────────────────────── */
+function AnimatedCounter({ target, suffix = '', prefix = '' }) {
   const [count, setCount] = useState(0)
   const ref = useRef(null)
-  const [started, setStarted] = useState(false)
+  const inView = useInView(ref, { once: true, margin: '-60px' })
+
   useEffect(() => {
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setStarted(true) }, { threshold: 0.5 })
-    if (ref.current) obs.observe(ref.current)
-    return () => obs.disconnect()
-  }, [])
-  useEffect(() => {
-    if (!started) return
-    let start = 0; const dur = 1800; const step = 16
-    const inc = to / (dur / step)
-    const t = setInterval(() => {
-      start += inc
-      if (start >= to) { setCount(to); clearInterval(t) }
-      else setCount(Math.floor(start))
+    if (!inView) return
+    let start = 0
+    const duration = 1800
+    const step = 16
+    const increment = target / (duration / step)
+    const timer = setInterval(() => {
+      start += increment
+      if (start >= target) {
+        setCount(target)
+        clearInterval(timer)
+      } else {
+        setCount(Math.floor(start))
+      }
     }, step)
-    return () => clearInterval(t)
-  }, [started, to])
-  return <span ref={ref}>{count}{suffix}</span>
+    return () => clearInterval(timer)
+  }, [inView, target])
+
+  return (
+    <span ref={ref}>
+      {prefix}{count}{suffix}
+    </span>
+  )
 }
 
-/* ── Service card ─────────────────────────────────────────── */
-function ServiceCard({ icon: Icon, title, desc, delay }) {
-  const [hov, setHov] = useState(false)
+/* ─────────────────────────────────────────────
+   3D SERVICE CARD
+───────────────────────────────────────────── */
+function ServiceCard({ icon: Icon, title, desc, color, delay, index }) {
+  const [hovered, setHovered] = useState(false)
+  const [tilt, setTilt] = useState({ x: 0, y: 0 })
+  const cardRef = useRef(null)
+
+  const handleMouseMove = useCallback((e) => {
+    if (!cardRef.current) return
+    const rect = cardRef.current.getBoundingClientRect()
+    const cx = rect.left + rect.width / 2
+    const cy = rect.top + rect.height / 2
+    const dx = (e.clientX - cx) / (rect.width / 2)
+    const dy = (e.clientY - cy) / (rect.height / 2)
+    setTilt({ x: dy * -10, y: dx * 10 })
+  }, [])
+
+  const handleMouseLeave = useCallback(() => {
+    setHovered(false)
+    setTilt({ x: 0, y: 0 })
+  }, [])
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }} transition={{ delay, duration: 0.7, ease: [0.16,1,0.3,1] }}
-      onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
+      ref={cardRef}
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-40px' }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      animate={{
+        rotateX: tilt.x,
+        rotateY: tilt.y,
+        scale: hovered ? 1.03 : 1,
+        z: hovered ? 40 : 0,
+      }}
+      transition={{
+        default: { type: 'spring', stiffness: 200, damping: 20 },
+        opacity: { duration: 0.7, delay, ease: [0.16, 1, 0.3, 1] },
+        y: { duration: 0.7, delay, ease: [0.16, 1, 0.3, 1] },
+      }}
       style={{
-        padding: '2.5rem', borderRadius: 16, cursor: 'default', position: 'relative', overflow: 'hidden',
-        border: hov ? '1px solid var(--border-bright)' : '1px solid var(--border)',
-        background: hov ? 'var(--card)' : 'var(--surface)',
-        transform: hov ? 'translateY(-8px)' : 'translateY(0)',
-        transition: 'all 0.4s var(--ease-out-expo)',
-        boxShadow: hov ? '0 24px 60px rgba(108,58,255,0.15)' : 'none',
+        background: hovered
+          ? 'rgba(20,18,48,0.95)'
+          : 'rgba(14,12,35,0.7)',
+        backdropFilter: 'blur(24px)',
+        WebkitBackdropFilter: 'blur(24px)',
+        border: hovered
+          ? `1px solid ${color}55`
+          : '1px solid rgba(255,255,255,0.06)',
+        borderRadius: 20,
+        padding: '2rem',
+        cursor: 'default',
+        transformStyle: 'preserve-3d',
+        boxShadow: hovered
+          ? `0 24px 80px rgba(0,0,0,0.5), 0 0 40px ${color}22`
+          : '0 8px 32px rgba(0,0,0,0.3)',
+        transition: 'background 0.4s, border 0.4s, box-shadow 0.4s',
+        position: 'relative',
+        overflow: 'hidden',
       }}
     >
-      {hov && <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: 'linear-gradient(90deg, var(--violet), var(--cyan))', borderRadius: '16px 16px 0 0' }} />}
-      <motion.div animate={{ rotate: hov ? [0, -10, 10, 0] : 0 }} transition={{ duration: 0.5 }}
-        style={{ width: 48, height: 48, borderRadius: 12, background: 'linear-gradient(135deg, rgba(108,58,255,0.2), rgba(0,212,255,0.1))', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem', border: '1px solid var(--border)' }}
+      {/* Shimmer overlay on hover */}
+      <AnimatePresence>
+        {hovered && (
+          <motion.div
+            initial={{ opacity: 0, x: '-100%' }}
+            animate={{ opacity: 1, x: '200%' }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.7, ease: 'easeInOut' }}
+            style={{
+              position: 'absolute', top: 0, left: 0,
+              width: '60%', height: '100%',
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent)',
+              pointerEvents: 'none', zIndex: 1,
+            }}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Icon */}
+      <motion.div
+        animate={{ y: hovered ? -4 : 0 }}
+        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+        style={{
+          width: 52, height: 52, borderRadius: 14,
+          background: `${color}18`,
+          border: `1px solid ${color}35`,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          marginBottom: '1.25rem',
+          boxShadow: hovered ? `0 0 20px ${color}30` : 'none',
+          transition: 'box-shadow 0.4s',
+          position: 'relative', zIndex: 2,
+        }}
       >
-        <Icon size={22} color={hov ? 'var(--cyan)' : 'var(--violet-bright)'} />
+        <Icon size={22} color={color} />
       </motion.div>
-      <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.7rem', color: hov ? '#fff' : 'var(--off-white)' }}>{title}</h3>
-      <p style={{ fontSize: '0.87rem', color: 'var(--muted)', lineHeight: 1.75 }}>{desc}</p>
+
+      {/* Number badge */}
+      <div style={{
+        position: 'absolute', top: '1.5rem', right: '1.5rem',
+        fontFamily: 'var(--font-display)', fontSize: '3.5rem',
+        fontWeight: 800, color: 'rgba(255,255,255,0.03)',
+        lineHeight: 1, userSelect: 'none', zIndex: 0,
+      }}>
+        {String(index + 1).padStart(2, '0')}
+      </div>
+
+      <h3 style={{
+        fontFamily: 'var(--font-display)', fontWeight: 700,
+        fontSize: '1.1rem', color: 'var(--off-white)',
+        marginBottom: '0.6rem', position: 'relative', zIndex: 2,
+      }}>{title}</h3>
+
+      <p style={{
+        fontSize: '0.85rem', color: 'var(--muted)',
+        lineHeight: 1.75, position: 'relative', zIndex: 2,
+      }}>{desc}</p>
+
+      {/* Bottom accent line */}
+      <motion.div
+        animate={{ scaleX: hovered ? 1 : 0, opacity: hovered ? 1 : 0 }}
+        transition={{ duration: 0.4 }}
+        style={{
+          position: 'absolute', bottom: 0, left: 0, right: 0,
+          height: 2,
+          background: `linear-gradient(90deg, transparent, ${color}, transparent)`,
+          transformOrigin: 'left',
+        }}
+      />
     </motion.div>
   )
 }
 
-const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.1 } } }
-const fadeUp = { hidden: { opacity: 0, y: 40 }, show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16,1,0.3,1] } } }
-
-export default function Home() {
-  const heroRef = useRef(null)
-  const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] })
-  const heroY = useTransform(scrollYProgress, [0, 1], ['0%', '30%'])
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0])
-  const mag = useMagnet(0.3)
+/* ─────────────────────────────────────────────
+   PROJECT CARD (Work Teaser)
+───────────────────────────────────────────── */
+function ProjectCard({ title, tag, desc, color, delay, gradient }) {
+  const [hovered, setHovered] = useState(false)
 
   return (
-    <PageTransition>
-      <CursorGlow />
+    <motion.div
+      initial={{ opacity: 0, y: 60 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-40px' }}
+      transition={{ duration: 0.8, delay, ease: [0.16, 1, 0.3, 1] }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        borderRadius: 24,
+        overflow: 'hidden',
+        background: 'var(--card)',
+        border: hovered ? `1px solid ${color}40` : '1px solid var(--border)',
+        boxShadow: hovered
+          ? `0 32px 80px rgba(0,0,0,0.5), 0 0 60px ${color}18`
+          : '0 8px 32px rgba(0,0,0,0.3)',
+        transition: 'all 0.5s var(--ease-out-expo)',
+        cursor: 'pointer',
+        position: 'relative',
+      }}
+    >
+      {/* Visual area */}
+      <div style={{
+        height: 220,
+        background: gradient,
+        position: 'relative',
+        overflow: 'hidden',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+      }}>
+        {/* Animated grid inside card */}
+        <div style={{
+          position: 'absolute', inset: 0,
+          backgroundImage: `
+            linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)
+          `,
+          backgroundSize: '30px 30px',
+        }} />
 
-      {/* ── HERO ── */}
-      <section ref={heroRef} style={{ minHeight: '100vh', position: 'relative', display: 'flex', alignItems: 'center', overflow: 'hidden', overflowX: 'hidden', background: 'var(--void)' }}>
-        <Orbs />
-        <Grid />
-
+        {/* Floating orb */}
         <motion.div
-          className="hero-container"
+          animate={{ scale: hovered ? 1.3 : 1, opacity: hovered ? 0.8 : 0.5 }}
+          transition={{ duration: 0.6 }}
           style={{
-            position: 'relative', zIndex: 2, maxWidth: 1200, margin: '0 auto',
-            padding: '0 var(--site-gutter)', width: '100%', minWidth: 0, boxSizing: 'border-box',
-            y: heroY, opacity: heroOpacity,
+            width: 120, height: 120, borderRadius: '50%',
+            background: `radial-gradient(circle, ${color}60, transparent 70%)`,
+            filter: 'blur(20px)',
+          }}
+        />
+
+        {/* Tag */}
+        <div style={{
+          position: 'absolute', top: 16, left: 16,
+          padding: '4px 12px', borderRadius: 50,
+          background: 'rgba(0,0,0,0.5)',
+          backdropFilter: 'blur(10px)',
+          border: `1px solid ${color}40`,
+          fontFamily: 'var(--font-ui)', fontSize: '0.68rem',
+          fontWeight: 600, letterSpacing: '0.1em',
+          textTransform: 'uppercase', color,
+        }}>{tag}</div>
+
+        {/* Hover overlay */}
+        <motion.div
+          animate={{ opacity: hovered ? 1 : 0 }}
+          transition={{ duration: 0.3 }}
+          style={{
+            position: 'absolute', inset: 0,
+            background: 'rgba(0,0,0,0.3)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}
         >
           <motion.div
-            variants={stagger}
-            initial="hidden"
-            animate="show"
+            animate={{ scale: hovered ? 1 : 0.7, opacity: hovered ? 1 : 0 }}
+            transition={{ duration: 0.3, delay: 0.05 }}
             style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'flex-start',
-              width: '100%',
-              minWidth: 0,
-              textAlign: 'left',
-              /* Keeps headline / copy in the same vertical band as before (badge height + 1.5rem margin). */
-              paddingTop: 'clamp(2.25rem, 4.5vw, 3.5rem)',
+              width: 52, height: 52, borderRadius: '50%',
+              background: color,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              boxShadow: `0 0 30px ${color}80`,
             }}
           >
+            <ExternalLink size={20} color="white" />
+          </motion.div>
+        </motion.div>
+      </div>
 
-            <motion.h1 variants={fadeUp} className="display-hero" style={{
-              fontFamily: 'var(--font-display)', fontWeight: 800,
-              fontSize: 'clamp(1.875rem, 6.5vw + 0.65rem, 8.5rem)', lineHeight: 0.95,
-              letterSpacing: '-0.03em', margin: '0 0 0.4em',
-              width: '100%', alignSelf: 'stretch',
-            }}>
-              <span style={{ display: 'block', color: 'var(--off-white)' }}>We Build</span>
-              <span className="shimmer-text" style={{ display: 'block' }}>Websites</span>
-              <span style={{ display: 'block', color: 'var(--off-white)' }}>That Win.</span>
+      {/* Content */}
+      <div style={{ padding: '1.5rem' }}>
+        <h3 style={{
+          fontFamily: 'var(--font-display)', fontWeight: 700,
+          fontSize: '1.05rem', color: 'var(--off-white)',
+          marginBottom: '0.5rem',
+        }}>{title}</h3>
+        <p style={{ fontSize: '0.82rem', color: 'var(--muted)', lineHeight: 1.7 }}>{desc}</p>
+      </div>
+    </motion.div>
+  )
+}
+
+/* ─────────────────────────────────────────────
+   MAGNETIC CTA BUTTON
+───────────────────────────────────────────── */
+function MagneticButton({ children, to, style: extraStyle }) {
+  const btnRef = useRef(null)
+  const [offset, setOffset] = useState({ x: 0, y: 0 })
+
+  const handleMouseMove = useCallback((e) => {
+    if (!btnRef.current) return
+    const rect = btnRef.current.getBoundingClientRect()
+    const cx = rect.left + rect.width / 2
+    const cy = rect.top + rect.height / 2
+    setOffset({
+      x: (e.clientX - cx) * 0.35,
+      y: (e.clientY - cy) * 0.35,
+    })
+  }, [])
+
+  const handleMouseLeave = useCallback(() => {
+    setOffset({ x: 0, y: 0 })
+  }, [])
+
+  return (
+    <motion.div
+      ref={btnRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      animate={{ x: offset.x, y: offset.y }}
+      transition={{ type: 'spring', stiffness: 200, damping: 18 }}
+      style={{ display: 'inline-block' }}
+    >
+      <Link to={to}>
+        <motion.button
+          whileHover={{ scale: 1.06 }}
+          whileTap={{ scale: 0.94 }}
+          className="btn-primary"
+          style={extraStyle}
+        >
+          {children}
+        </motion.button>
+      </Link>
+    </motion.div>
+  )
+}
+
+/* ─────────────────────────────────────────────
+   SCROLL INDICATOR
+───────────────────────────────────────────── */
+function ScrollIndicator() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 2.2, duration: 0.8 }}
+      style={{
+        display: 'flex', flexDirection: 'column',
+        alignItems: 'center', gap: 8,
+        position: 'absolute', bottom: '2.5rem', left: '50%',
+        transform: 'translateX(-50%)',
+        zIndex: 10,
+      }}
+    >
+      <span style={{
+        fontFamily: 'var(--font-ui)', fontSize: '0.65rem',
+        letterSpacing: '0.2em', textTransform: 'uppercase',
+        color: 'var(--muted)',
+      }}>Scroll</span>
+      <motion.div
+        animate={{ y: [0, 8, 0] }}
+        transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
+        style={{
+          width: 24, height: 38, borderRadius: 12,
+          border: '1.5px solid rgba(124,58,255,0.4)',
+          display: 'flex', alignItems: 'flex-start',
+          justifyContent: 'center', padding: '5px 0',
+        }}
+      >
+        <motion.div
+          animate={{ y: [0, 14, 0], opacity: [1, 0, 1] }}
+          transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
+          style={{
+            width: 4, height: 8, borderRadius: 2,
+            background: 'linear-gradient(var(--violet), var(--cyan))',
+          }}
+        />
+      </motion.div>
+    </motion.div>
+  )
+}
+
+/* ─────────────────────────────────────────────
+   DATA
+───────────────────────────────────────────── */
+const services = [
+  {
+    icon: Globe,
+    title: 'Business Websites',
+    desc: 'Full-stack websites that convert visitors into clients. Built for speed, SEO, and lasting impressions.',
+    color: 'var(--violet-bright)',
+  },
+  {
+    icon: Rocket,
+    title: 'Landing Pages',
+    desc: 'High-converting single pages engineered around your offer. Every pixel earns its place.',
+    color: 'var(--cyan)',
+  },
+  {
+    icon: Palette,
+    title: 'UI/UX Design',
+    desc: 'Interfaces that feel inevitable. We design with psychology, not just aesthetics.',
+    color: 'var(--gold)',
+  },
+  {
+    icon: Code2,
+    title: 'Custom Development',
+    desc: 'Bespoke web applications built with modern stacks. Scalable, maintainable, and fast.',
+    color: '#ff4d8d',
+  },
+  {
+    icon: TrendingUp,
+    title: 'SEO & Performance',
+    desc: 'Technical SEO and Core Web Vitals optimisation that puts you ahead of the competition.',
+    color: '#00e5a0',
+  },
+  {
+    icon: Layers,
+    title: 'Brand Identity',
+    desc: 'Cohesive visual systems — logos, palettes, typography — that make your brand unforgettable.',
+    color: 'var(--violet)',
+  },
+]
+
+const projects = [
+  {
+    title: 'Luminary Finance',
+    tag: 'Fintech',
+    desc: 'A premium dashboard and marketing site for a next-gen investment platform.',
+    color: 'var(--cyan)',
+    gradient: 'linear-gradient(135deg, #020a18 0%, #001a2e 50%, #002a40 100%)',
+  },
+  {
+    title: 'Aura Wellness',
+    tag: 'Health & Wellness',
+    desc: 'Calming, conversion-focused website for a luxury wellness brand.',
+    color: '#00e5a0',
+    gradient: 'linear-gradient(135deg, #020f0a 0%, #001a10 50%, #002a1a 100%)',
+  },
+  {
+    title: 'Forge Studio',
+    tag: 'Creative Agency',
+    desc: 'Bold portfolio site with immersive 3D transitions for a design studio.',
+    color: 'var(--violet-bright)',
+    gradient: 'linear-gradient(135deg, #08020f 0%, #120520 50%, #1a0830 100%)',
+  },
+]
+
+const stats = [
+  { value: 50, suffix: '+', label: 'Projects Delivered', icon: Rocket },
+  { value: 100, suffix: '%', label: 'Client Satisfaction', icon: Star },
+  { value: 3, suffix: 'x', label: 'Avg. Traffic Increase', icon: TrendingUp },
+  { value: 48, suffix: 'h', label: 'Avg. Turnaround', icon: Clock },
+]
+
+const techBadges = [
+  { label: 'React', color: '#61dafb' },
+  { label: 'Next.js', color: '#ffffff' },
+  { label: 'Framer', color: '#ff4d8d' },
+  { label: 'Figma', color: '#f24e1e' },
+  { label: 'TypeScript', color: '#3178c6' },
+  { label: 'Tailwind', color: '#38bdf8' },
+]
+
+/* ─────────────────────────────────────────────
+   HOME PAGE
+───────────────────────────────────────────── */
+export default function Home() {
+  const containerRef = useRef(null)
+  const heroRef = useRef(null)
+  const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] })
+
+  const heroY = useTransform(scrollYProgress, [0, 1], ['0%', '30%'])
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0])
+  const heroScale = useTransform(scrollYProgress, [0, 1], [1, 0.92])
+
+  const springY = useSpring(heroY, { stiffness: 60, damping: 20 })
+
+  return (
+    <motion.main
+      ref={containerRef}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
+      style={{ background: 'var(--void)', overflowX: 'hidden' }}
+    >
+      <CursorGlow />
+
+      {/* ── HERO ── */}
+      <section
+        ref={heroRef}
+        style={{
+          minHeight: '100vh',
+          display: 'flex', flexDirection: 'column',
+          alignItems: 'center', justifyContent: 'center',
+          position: 'relative',
+          paddingTop: 100,
+          paddingBottom: 80,
+          paddingLeft: 'var(--site-gutter)',
+          paddingRight: 'var(--site-gutter)',
+          overflow: 'hidden',
+        }}
+      >
+        <FloatingOrbs />
+        <AnimatedGrid />
+
+        {/* Radial spotlight */}
+        <div style={{
+          position: 'absolute', top: 0, left: '50%',
+          transform: 'translateX(-50%)',
+          width: '100%', maxWidth: 900, height: 600,
+          background: 'radial-gradient(ellipse 70% 50% at 50% 0%, rgba(124,58,255,0.2), transparent 70%)',
+          pointerEvents: 'none',
+        }} />
+
+        <motion.div
+          style={{ y: springY, opacity: heroOpacity, scale: heroScale }}
+          className="display-hero"
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <div style={{
+            maxWidth: 900, margin: '0 auto',
+            textAlign: 'center', position: 'relative', zIndex: 5,
+          }}>
+
+            {/* Label pill */}
+            <motion.div
+              initial={{ opacity: 0, y: 20, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ delay: 0.3, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: 8,
+                padding: '6px 16px 6px 10px', borderRadius: 50,
+                background: 'rgba(124,58,255,0.1)',
+                border: '1px solid rgba(124,58,255,0.3)',
+                backdropFilter: 'blur(12px)',
+                marginBottom: '2rem',
+              }}
+            >
+              <motion.div
+                animate={{ scale: [1, 1.3, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                style={{
+                  width: 7, height: 7, borderRadius: '50%',
+                  background: 'var(--cyan)',
+                  boxShadow: '0 0 8px var(--cyan)',
+                }}
+              />
+              <span style={{
+                fontFamily: 'var(--font-ui)', fontSize: '0.72rem',
+                fontWeight: 600, letterSpacing: '0.12em',
+                textTransform: 'uppercase', color: 'var(--violet-bright)',
+              }}>Premium Web Design Agency</span>
+            </motion.div>
+
+            {/* Headline */}
+            <motion.h1
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+              style={{
+                fontFamily: 'var(--font-display)', fontWeight: 800,
+                fontSize: 'clamp(2.8rem, 7vw, 6rem)',
+                lineHeight: 1.05, letterSpacing: '-0.03em',
+                marginBottom: '1.5rem',
+                color: 'var(--off-white)',
+              }}
+            >
+              We Build Websites{' '}
+              <br />
+              <span className="shimmer-text">That Open Doors</span>
             </motion.h1>
 
-            <GoldDivider />
-
-            <motion.p variants={fadeUp} style={{ maxWidth: 500, width: '100%', fontSize: '1.05rem', color: 'var(--muted)', lineHeight: 1.85, margin: '1rem 0 2.5rem', fontWeight: 300 }}>
-              Nexora Developers craft premium, high-performance websites for businesses and individuals who demand the very best online presence — fast, beautiful, and built to convert.
+            {/* Sub */}
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.75, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              style={{
+                fontSize: 'clamp(1rem, 2vw, 1.2rem)',
+                color: 'var(--muted)', lineHeight: 1.8,
+                maxWidth: 580, margin: '0 auto 2.5rem',
+                fontWeight: 300,
+              }}
+            >
+              Nexora Developers crafts premium digital experiences — from bold landing pages
+              to full-scale web applications — built to convert, impress, and scale.
             </motion.p>
 
-            <motion.div variants={fadeUp} style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
-              <motion.div ref={mag.ref} style={{ x: mag.x, y: mag.y }}>
-                <Link to="/contact">
-                  <motion.button
-                    whileHover={{ scale: 1.06 }} whileTap={{ scale: 0.95 }}
-                    style={{
-                      padding: '1rem 2.5rem', borderRadius: 50,
-                      background: 'linear-gradient(135deg, var(--violet), var(--violet-bright))',
-                      border: 'none', cursor: 'pointer', color: 'white',
-                      fontFamily: 'var(--font-ui)', fontSize: '0.9rem', fontWeight: 600,
-                      display: 'flex', alignItems: 'center', gap: 10,
-                      boxShadow: '0 8px 32px rgba(108,58,255,0.4)',
-                      position: 'relative', overflow: 'hidden',
-                    }}
-                  >
-                    <span>Start a Project</span> <ArrowRight size={16} />
-                    <motion.div
-                      animate={{ x: ['-100%', '200%'] }} transition={{ duration: 2, repeat: Infinity, ease: 'linear', repeatDelay: 1 }}
-                      style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)', width: '50%' }}
-                    />
-                  </motion.button>
-                </Link>
-              </motion.div>
+            {/* CTA row */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.95, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              style={{
+                display: 'flex', gap: '1rem',
+                justifyContent: 'center', flexWrap: 'wrap',
+                marginBottom: '3.5rem',
+              }}
+            >
+              <MagneticButton to="/contact">
+                Start Your Project <ArrowRight size={16} />
+              </MagneticButton>
               <Link to="/work">
-                <motion.button whileHover={{ borderColor: 'var(--violet-bright)', color: '#fff' }} style={{
-                  padding: '1rem 2.2rem', borderRadius: 50, background: 'transparent',
-                  border: '1px solid var(--border)', cursor: 'pointer', color: 'var(--muted)',
-                  fontFamily: 'var(--font-ui)', fontSize: '0.9rem', fontWeight: 500,
-                  transition: 'all 0.3s',
-                }}>View Our Work</motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.04, borderColor: 'var(--violet-bright)', color: '#fff' }}
+                  whileTap={{ scale: 0.96 }}
+                  className="btn-ghost"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}
+                >
+                  <Play size={14} />
+                  View Our Work
+                </motion.button>
               </Link>
             </motion.div>
 
-            {/* Stars / social proof */}
-            <motion.div variants={fadeUp} style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: '2.5rem' }}>
-              <div style={{ display: 'flex' }}>
-                {[...Array(5)].map((_, i) => <Star key={i} size={14} fill="#f0c040" color="#f0c040" style={{ marginRight: 2 }} />)}
-              </div>
-              <span style={{ fontFamily: 'var(--font-ui)', fontSize: '0.78rem', color: 'var(--muted)' }}>50+ happy clients · 5★ rated</span>
+            {/* Tech badges */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.2, duration: 0.8 }}
+              style={{
+                display: 'flex', gap: '0.6rem',
+                justifyContent: 'center', flexWrap: 'wrap',
+              }}
+            >
+              {techBadges.map((badge, i) => (
+                <motion.div
+                  key={badge.label}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 1.3 + i * 0.07, duration: 0.5, ease: [0.34, 1.56, 0.64, 1] }}
+                  whileHover={{ y: -4, scale: 1.1 }}
+                  style={{
+                    padding: '4px 12px', borderRadius: 50,
+                    background: 'rgba(255,255,255,0.04)',
+                    border: `1px solid ${badge.color}30`,
+                    fontFamily: 'var(--font-ui)', fontSize: '0.7rem',
+                    fontWeight: 500, color: badge.color,
+                    backdropFilter: 'blur(8px)',
+                    cursor: 'default',
+                  }}
+                >
+                  {badge.label}
+                </motion.div>
+              ))}
             </motion.div>
-          </motion.div>
+          </div>
         </motion.div>
 
-        {/* Floating tech badges */}
-        {[
-          { label: 'React', x: '78%', y: '20%', delay: 0.3 },
-          { label: 'Framer Motion', x: '82%', y: '55%', delay: 0.6 },
-          { label: 'Figma', x: '70%', y: '75%', delay: 0.9 },
-        ].map(b => (
-          <motion.div key={b.label}
-            initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: b.delay + 0.8, type: 'spring', stiffness: 200 }}
-            style={{ position: 'absolute', left: b.x, top: b.y, padding: '6px 14px', borderRadius: 50, background: 'rgba(13,12,36,0.9)', border: '1px solid var(--border)', fontFamily: 'var(--font-ui)', fontSize: '0.72rem', color: 'var(--muted)', backdropFilter: 'blur(10px)', animation: 'float 6s ease-in-out infinite', animationDelay: `${b.delay}s`, zIndex: 3 }}
-            className="hide-mobile"
-          >{b.label}</motion.div>
-        ))}
-
-        {/* Scroll indicator */}
-        <motion.div animate={{ y: [0, 10, 0] }} transition={{ repeat: Infinity, duration: 2 }}
-          className="hero-scroll-hint"
-          style={{ position: 'absolute', bottom: 32, left: '50%', transform: 'translateX(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, color: 'var(--muted)', zIndex: 3 }}>
-          <span style={{ fontFamily: 'var(--font-ui)', fontSize: '0.65rem', letterSpacing: '0.15em', textTransform: 'uppercase' }}>Scroll</span>
-          <ChevronDown size={18} />
-        </motion.div>
+        <ScrollIndicator />
       </section>
 
       {/* ── MARQUEE ── */}
-      <Marquee />
+      <MarqueeStrip />
 
       {/* ── STATS ── */}
-      <section style={{ padding: '6rem var(--site-gutter)', background: 'var(--deep)', position: 'relative', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: 800, height: 400, background: 'radial-gradient(ellipse, rgba(108,58,255,0.06), transparent 70%)', pointerEvents: 'none' }} />
-        <div className="home-stats-grid" style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '2rem', position: 'relative' }}>
-          {[
-            { n: 50, suf: '+', label: 'Projects Delivered', icon: TrendingUp },
-            { n: 100, suf: '%', label: 'Client Satisfaction', icon: Star },
-            { n: 7, suf: ' Days', label: 'Avg. Delivery', icon: Zap },
-            { n: 1, suf: ' Year', label: 'In Business', icon: Globe },
-          ].map((s, i) => (
-            <motion.div key={s.label}
-              initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }} transition={{ delay: i * 0.1, duration: 0.6, ease: [0.16,1,0.3,1] }}
-              style={{ textAlign: 'center', padding: '2rem', borderRadius: 16, border: '1px solid var(--border)', background: 'var(--surface)', position: 'relative', overflow: 'hidden' }}
-            >
-              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 1, background: 'linear-gradient(90deg, transparent, var(--violet), transparent)' }} />
-              <s.icon size={20} color="var(--violet-bright)" style={{ margin: '0 auto 1rem' }} />
-              <p style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(2rem,4vw,3rem)', color: '#fff', lineHeight: 1 }}>
-                <Counter to={s.n} suffix={s.suf} />
-              </p>
-              <p style={{ fontFamily: 'var(--font-ui)', fontSize: '0.75rem', color: 'var(--muted)', marginTop: 8, letterSpacing: '0.08em', textTransform: 'uppercase' }}>{s.label}</p>
-            </motion.div>
-          ))}
+      <section style={{
+        padding: 'clamp(5rem, 10vw, 8rem) var(--site-gutter)',
+        position: 'relative',
+        background: 'linear-gradient(180deg, var(--void) 0%, var(--deep) 100%)',
+      }}>
+        {/* Subtle divider glow */}
+        <div style={{
+          position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)',
+          width: 600, height: 1,
+          background: 'linear-gradient(90deg, transparent, var(--violet), var(--cyan), transparent)',
+          opacity: 0.4,
+        }} />
+
+        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            style={{ textAlign: 'center', marginBottom: '4rem' }}
+          >
+            <div className="section-label-line" style={{ display: 'inline-flex', marginBottom: '1rem' }}>
+              <Sparkles size={12} color="var(--violet-bright)" />
+              <span style={{
+                fontFamily: 'var(--font-ui)', fontSize: '0.68rem',
+                fontWeight: 600, letterSpacing: '0.18em',
+                textTransform: 'uppercase', color: 'var(--violet-bright)',
+              }}>By the Numbers</span>
+            </div>
+            <h2 style={{
+              fontFamily: 'var(--font-display)', fontWeight: 800,
+              fontSize: 'clamp(2rem, 4vw, 3rem)',
+              letterSpacing: '-0.02em', color: 'var(--off-white)',
+            }}>
+              Results that{' '}
+              <span className="gradient-text">speak for themselves</span>
+            </h2>
+          </motion.div>
+
+          <div className="stats-grid" style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(4, 1fr)',
+            gap: '1.5rem',
+          }}>
+            {stats.map(({ value, suffix, label, icon: Icon }, i) => (
+              <motion.div
+                key={label}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-40px' }}
+                transition={{ duration: 0.7, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
+                whileHover={{ y: -6, scale: 1.03 }}
+                style={{
+                  background: 'rgba(14,12,35,0.7)',
+                  backdropFilter: 'blur(20px)',
+                  border: '1px solid var(--border)',
+                  borderRadius: 20,
+                  padding: '2rem 1.5rem',
+                  textAlign: 'center',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  cursor: 'default',
+                  transition: 'border-color 0.3s, box-shadow 0.3s',
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.borderColor = 'rgba(124,58,255,0.4)'
+                  e.currentTarget.style.boxShadow = '0 20px 60px rgba(0,0,0,0.4), 0 0 40px rgba(124,58,255,0.1)'
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.borderColor = 'var(--border)'
+                  e.currentTarget.style.boxShadow = 'none'
+                }}
+              >
+                {/* Background number */}
+                <div style={{
+                  position: 'absolute', top: '50%', left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  fontFamily: 'var(--font-display)', fontWeight: 800,
+                  fontSize: '6rem', color: 'rgba(124,58,255,0.04)',
+                  lineHeight: 1, userSelect: 'none', whiteSpace: 'nowrap',
+                }}>
+                  {value}{suffix}
+                </div>
+
+                <div style={{
+                  width: 44, height: 44, borderRadius: 12,
+                  background: 'rgba(124,58,255,0.12)',
+                  border: '1px solid rgba(124,58,255,0.2)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  margin: '0 auto 1rem',
+                }}>
+                  <Icon size={20} color="var(--violet-bright)" />
+                </div>
+
+                <div style={{
+                  fontFamily: 'var(--font-display)', fontWeight: 800,
+                  fontSize: 'clamp(2.2rem, 4vw, 3rem)',
+                  letterSpacing: '-0.03em',
+                  background: 'linear-gradient(135deg, var(--off-white), var(--violet-bright))',
+                  WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+                  lineHeight: 1, marginBottom: '0.5rem',
+                }}>
+                  <AnimatedCounter target={value} suffix={suffix} />
+                </div>
+
+                <p style={{
+                  fontFamily: 'var(--font-ui)', fontSize: '0.78rem',
+                  color: 'var(--muted)', fontWeight: 500,
+                  letterSpacing: '0.04em',
+                }}>{label}</p>
+              </motion.div>
+            ))}
+          </div>
         </div>
+
+        <style>{`
+          @media (max-width: 768px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
+          }
+          @media (max-width: 480px) {
+            .stats-grid { grid-template-columns: 1fr !important; }
+          }
+        `}</style>
       </section>
 
       {/* ── SERVICES TEASER ── */}
-      <section style={{ padding: '7rem var(--site-gutter)', maxWidth: 1200, margin: '0 auto' }}>
-        <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} style={{ marginBottom: '4rem' }}>
-          <SectionLabel>What We Do</SectionLabel>
-          <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(2rem,4vw,3.5rem)', lineHeight: 1.1, maxWidth: 600 }}>
-            Full-stack web presence,<br /><span className="shimmer-text">built for growth.</span>
-          </h2>
-        </motion.div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.5rem' }}>
-          <ServiceCard icon={Globe} title="Business Websites" desc="Custom multi-page sites that make your business look established and trustworthy from day one." delay={0} />
-          <ServiceCard icon={Zap} title="Landing Pages" desc="Single-focus, conversion-optimised pages for campaigns, products, and lead generation." delay={0.1} />
-          <ServiceCard icon={Shield} title="Portfolios & Brands" desc="Elegant personal sites that make creatives, coaches, and professionals stand out instantly." delay={0.2} />
-          <ServiceCard icon={Code} title="Redesigns & Fixes" desc="Breathe new life into outdated websites with modern design, improved UX, and better performance." delay={0.3} />
+      <section style={{
+        padding: 'clamp(5rem, 10vw, 8rem) var(--site-gutter)',
+        position: 'relative',
+        background: 'var(--deep)',
+      }}>
+        {/* Background glow */}
+        <div style={{
+          position: 'absolute', top: '50%', left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: 800, height: 600,
+          background: 'radial-gradient(ellipse, rgba(124,58,255,0.06), transparent 70%)',
+          pointerEvents: 'none',
+        }} />
+
+        <div style={{ maxWidth: 1200, margin: '0 auto', position: 'relative' }}>
+          {/* Header */}
+          <div style={{
+            display: 'flex', justifyContent: 'space-between',
+            alignItems: 'flex-end', flexWrap: 'wrap', gap: '1.5rem',
+            marginBottom: '3.5rem',
+          }}>
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <div className="section-label-line" style={{ display: 'inline-flex', marginBottom: '1rem' }}>
+                <Layers size={12} color="var(--violet-bright)" />
+                <span style={{
+                  fontFamily: 'var(--font-ui)', fontSize: '0.68rem',
+                  fontWeight: 600, letterSpacing: '0.18em',
+                  textTransform: 'uppercase', color: 'var(--violet-bright)',
+                }}>What We Do</span>
+              </div>
+              <h2 style={{
+                fontFamily: 'var(--font-display)', fontWeight: 800,
+                fontSize: 'clamp(2rem, 4vw, 3rem)',
+                letterSpacing: '-0.02em', color: 'var(--off-white)',
+                lineHeight: 1.1,
+              }}>
+                Services built for{' '}
+                <br />
+                <span className="gradient-text">modern businesses</span>
+              </h2>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <Link to="/services">
+                <motion.button
+                  whileHover={{ scale: 1.05, x: 4 }}
+                  whileTap={{ scale: 0.96 }}
+                  className="btn-ghost"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}
+                >
+                  All Services <ArrowRight size={14} />
+                </motion.button>
+              </Link>
+            </motion.div>
+          </div>
+
+          {/* Services grid */}
+          <div className="services-grid" style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: '1.25rem',
+            perspective: '1000px',
+          }}>
+            {services.map((svc, i) => (
+              <ServiceCard
+                key={svc.title}
+                {...svc}
+                index={i}
+                delay={i * 0.08}
+              />
+            ))}
+          </div>
         </div>
-        <div style={{ textAlign: 'center', marginTop: '3rem' }}>
-          <Link to="/services">
-            <motion.button whileHover={{ scale: 1.04, borderColor: 'var(--violet-bright)', color: '#fff' }} style={{
-              padding: '0.85rem 2rem', background: 'transparent',
-              border: '1px solid var(--border)', borderRadius: 50, cursor: 'pointer',
-              color: 'var(--muted)', fontFamily: 'var(--font-ui)', fontSize: '0.85rem',
-              fontWeight: 500, transition: 'all 0.3s', display: 'inline-flex', alignItems: 'center', gap: 8,
-            }}>
-              See All Services <ArrowRight size={14} />
-            </motion.button>
-          </Link>
-        </div>
+
+        <style>{`
+          @media (max-width: 900px) {
+            .services-grid { grid-template-columns: repeat(2, 1fr) !important; }
+          }
+          @media (max-width: 580px) {
+            .services-grid { grid-template-columns: 1fr !important; }
+          }
+        `}</style>
       </section>
 
       {/* ── WORK TEASER ── */}
-      <section style={{ padding: '2rem var(--site-gutter) 7rem', maxWidth: 1200, margin: '0 auto' }}>
-        <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} style={{ marginBottom: '3rem', display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
-          <div>
-            <SectionLabel>Recent Work</SectionLabel>
-            <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(2rem,4vw,3rem)' }}>Selected Projects</h2>
-          </div>
-          <Link to="/work"><motion.button whileHover={{ scale: 1.04 }} style={{ padding: '0.7rem 1.6rem', background: 'var(--raised)', border: '1px solid var(--border)', borderRadius: 50, cursor: 'pointer', color: 'var(--muted)', fontFamily: 'var(--font-ui)', fontSize: '0.78rem', fontWeight: 500, display: 'flex', alignItems: 'center', gap: 8 }}>View All Work <ArrowRight size={13} /></motion.button></Link>
-        </motion.div>
-        <div className="home-work-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
-          {[
-            { name: 'Home Root Farms', type: 'E-commerce · Atta & Grains', emoji: '🌾', color: 'rgba(251,191,36,0.1)', accent: '#fbbf24', url: 'https://homerootfarms.onrender.com/', desc: 'Premium flour & ancient grain e-commerce platform' },
-            { name: 'PackFolio', type: 'B2B · Packaging Supplier', emoji: '📦', color: 'rgba(99,102,241,0.1)', accent: '#818cf8', url: 'https://packfolio-1.onrender.com/', desc: 'Professional packaging supplier showcase website' },
-          ].map((p, i) => (
-            <motion.a key={p.name} href={p.url} target="_blank" rel="noopener noreferrer"
-              initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }} transition={{ delay: i * 0.15, duration: 0.7, ease: [0.16,1,0.3,1] }}
-              whileHover={{ y: -8, boxShadow: `0 24px 60px ${p.color.replace('0.1','0.3')}` }}
-              style={{
-                borderRadius: 16, overflow: 'hidden', border: '1px solid var(--border)',
-                background: 'var(--surface)', display: 'block', cursor: 'pointer',
-                transition: 'box-shadow 0.4s, transform 0.4s', textDecoration: 'none',
-              }}
+      <section style={{
+        padding: 'clamp(5rem, 10vw, 8rem) var(--site-gutter)',
+        position: 'relative',
+        background: 'linear-gradient(180deg, var(--deep) 0%, var(--surface) 100%)',
+      }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+          {/* Header */}
+          <div style={{
+            display: 'flex', justifyContent: 'space-between',
+            alignItems: 'flex-end', flexWrap: 'wrap', gap: '1.5rem',
+            marginBottom: '3.5rem',
+          }}>
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
             >
-              <div style={{ aspectRatio: '16/9', background: p.color, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 8, borderBottom: '1px solid var(--border)', position: 'relative' }}>
-                <div style={{ fontSize: '3.5rem' }}>{p.emoji}</div>
-                <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.2rem', fontWeight: 700, color: p.accent }}>{p.name}</div>
-                <div style={{ position: 'absolute', top: 12, right: 12, padding: '4px 10px', borderRadius: 50, background: 'rgba(0,0,0,0.4)', fontFamily: 'var(--font-ui)', fontSize: '0.65rem', color: 'var(--muted)', backdropFilter: 'blur(8px)' }}>Live Site ↗</div>
+              <div className="section-label-line" style={{ display: 'inline-flex', marginBottom: '1rem' }}>
+                <Star size={12} color="var(--gold)" />
+                <span style={{
+                  fontFamily: 'var(--font-ui)', fontSize: '0.68rem',
+                  fontWeight: 600, letterSpacing: '0.18em',
+                  textTransform: 'uppercase', color: 'var(--gold)',
+                }}>Selected Work</span>
               </div>
-              <div style={{ padding: '1.5rem' }}>
-                <p style={{ fontFamily: 'var(--font-ui)', fontSize: '0.7rem', color: p.accent, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 4 }}>{p.type}</p>
-                <p style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '1.1rem' }}>{p.name}</p>
-                <p style={{ fontSize: '0.82rem', color: 'var(--muted)', marginTop: 4 }}>{p.desc}</p>
-              </div>
-            </motion.a>
-          ))}
+              <h2 style={{
+                fontFamily: 'var(--font-display)', fontWeight: 800,
+                fontSize: 'clamp(2rem, 4vw, 3rem)',
+                letterSpacing: '-0.02em', color: 'var(--off-white)',
+                lineHeight: 1.1,
+              }}>
+                Projects we're{' '}
+                <span style={{
+                  background: 'linear-gradient(135deg, var(--gold), #ffaa00)',
+                  WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+                }}>proud of</span>
+              </h2>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <Link to="/work">
+                <motion.button
+                  whileHover={{ scale: 1.05, x: 4 }}
+                  whileTap={{ scale: 0.96 }}
+                  className="btn-ghost"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}
+                >
+                  View All Work <ArrowRight size={14} />
+                </motion.button>
+              </Link>
+            </motion.div>
+          </div>
+
+          {/* Projects grid */}
+          <div className="projects-grid" style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: '1.5rem',
+          }}>
+            {projects.map((proj, i) => (
+              <ProjectCard key={proj.title} {...proj} delay={i * 0.12} />
+            ))}
+          </div>
         </div>
+
+        <style>{`
+          @media (max-width: 900px) {
+            .projects-grid { grid-template-columns: repeat(2, 1fr) !important; }
+          }
+          @media (max-width: 580px) {
+            .projects-grid { grid-template-columns: 1fr !important; }
+          }
+        `}</style>
+      </section>
+
+      {/* ── TRUST STRIP ── */}
+      <section style={{
+        padding: 'clamp(3rem, 6vw, 5rem) var(--site-gutter)',
+        background: 'var(--surface)',
+        borderTop: '1px solid var(--border)',
+        borderBottom: '1px solid var(--border)',
+        position: 'relative',
+        overflow: 'hidden',
+      }}>
+        <div style={{
+          position: 'absolute', inset: 0,
+          background: 'radial-gradient(ellipse 60% 100% at 50% 50%, rgba(124,58,255,0.04), transparent)',
+          pointerEvents: 'none',
+        }} />
+        <div style={{ maxWidth: 1200, margin: '0 auto', position: 'relative' }}>
+          <div className="trust-grid" style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: '2rem',
+          }}>
+            {[
+              {
+                icon: Shield,
+                title: 'No-Risk Guarantee',
+                desc: "If you're not happy with the first draft, we revise until you are — no questions asked.",
+                color: 'var(--cyan)',
+              },
+              {
+                icon: Clock,
+                title: 'Fast Delivery',
+                desc: 'Most projects delivered within 5–10 business days. Speed without sacrificing quality.',
+                color: 'var(--gold)',
+              },
+              {
+                icon: Users,
+                title: 'Dedicated Support',
+                desc: 'Direct access to your designer and developer throughout the entire project lifecycle.',
+                color: 'var(--violet-bright)',
+              },
+            ].map(({ icon: Icon, title, desc, color }, i) => (
+              <motion.div
+                key={title}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
+                style={{
+                  display: 'flex', gap: '1.25rem', alignItems: 'flex-start',
+                }}
+              >
+                <div style={{
+                  width: 48, height: 48, borderRadius: 14, flexShrink: 0,
+                  background: `${color}15`,
+                  border: `1px solid ${color}30`,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}>
+                  <Icon size={20} color={color} />
+                </div>
+                <div>
+                  <h4 style={{
+                    fontFamily: 'var(--font-display)', fontWeight: 700,
+                    fontSize: '0.95rem', color: 'var(--off-white)',
+                    marginBottom: '0.4rem',
+                  }}>{title}</h4>
+                  <p style={{ fontSize: '0.82rem', color: 'var(--muted)', lineHeight: 1.7 }}>{desc}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        <style>{`
+          @media (max-width: 768px) {
+            .trust-grid { grid-template-columns: 1fr !important; }
+          }
+        `}</style>
       </section>
 
       {/* ── CTA BAND ── */}
-      <section className="home-cta-outer" style={{ margin: '0 var(--site-gutter) 6rem', borderRadius: 24, overflow: 'hidden', position: 'relative' }}>
-        <div className="home-cta-inner" style={{ background: 'linear-gradient(135deg, var(--raised) 0%, #0d0c36 100%)', padding: '6rem clamp(1.25rem, 5vw, 4rem)', textAlign: 'center', border: '1px solid var(--border-bright)', position: 'relative' }}>
-          <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 60% 80% at 50% 50%, rgba(108,58,255,0.12), transparent)', pointerEvents: 'none' }} />
-          {/* Animated ring */}
-          <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: 400, height: 400, borderRadius: '50%', border: '1px solid rgba(108,58,255,0.12)', animation: 'pulse-glow 3s ease-in-out infinite', pointerEvents: 'none' }} />
-          <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: 600, height: 600, borderRadius: '50%', border: '1px solid rgba(108,58,255,0.06)', animation: 'pulse-glow 3s ease-in-out infinite 1s', pointerEvents: 'none' }} />
-          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} style={{ position: 'relative', zIndex: 1 }}>
-            <p style={{ fontFamily: 'var(--font-ui)', fontSize: '0.72rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--violet-bright)', marginBottom: '1rem' }}>Ready to launch?</p>
-            <h2 className="display-hero" style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(2rem,5vw,4rem)', lineHeight: 1.1, marginBottom: '1.5rem' }}>
-              Your business deserves<br /><span className="shimmer-text">to be found online.</span>
+      <section style={{
+        padding: 'clamp(6rem, 12vw, 10rem) var(--site-gutter)',
+        position: 'relative',
+        overflow: 'hidden',
+        background: 'linear-gradient(180deg, var(--surface) 0%, var(--void) 100%)',
+      }}>
+        {/* Animated rings */}
+        {[1, 2, 3, 4].map((n) => (
+          <motion.div
+            key={n}
+            animate={{ scale: [1, 1.5 + n * 0.3], opacity: [0.4, 0] }}
+            transition={{
+              duration: 3 + n * 0.5,
+              repeat: Infinity,
+              delay: n * 0.7,
+              ease: 'easeOut',
+            }}
+            style={{
+              position: 'absolute',
+              top: '50%', left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: 200 + n * 80,
+              height: 200 + n * 80,
+              borderRadius: '50%',
+              border: '1px solid rgba(124,58,255,0.2)',
+              pointerEvents: 'none',
+            }}
+          />
+        ))}
+
+        {/* Glow center */}
+        <div style={{
+          position: 'absolute', top: '50%', left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: 600, height: 400,
+          background: 'radial-gradient(ellipse, rgba(124,58,255,0.15), transparent 70%)',
+          pointerEvents: 'none',
+          filter: 'blur(40px)',
+        }} />
+
+        <div style={{
+          maxWidth: 700, margin: '0 auto',
+          textAlign: 'center', position: 'relative', zIndex: 5,
+        }}>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          >
+            {/* Icon */}
+            <motion.div
+              animate={{ rotate: [0, 10, -10, 0], scale: [1, 1.1, 1] }}
+              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+              style={{
+                width: 72, height: 72, borderRadius: 20,
+                background: 'linear-gradient(135deg, var(--violet-deep), var(--violet))',
+                border: '1px solid rgba(124,58,255,0.4)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                margin: '0 auto 2rem',
+                boxShadow: '0 0 40px rgba(124,58,255,0.4), 0 0 80px rgba(124,58,255,0.15)',
+              }}
+            >
+              <Sparkles size={30} color="white" />
+            </motion.div>
+
+            <h2 style={{
+              fontFamily: 'var(--font-display)', fontWeight: 800,
+              fontSize: 'clamp(2.2rem, 5vw, 3.8rem)',
+              letterSpacing: '-0.03em', lineHeight: 1.05,
+              color: 'var(--off-white)', marginBottom: '1.25rem',
+            }}>
+              Ready to build{' '}
+              <span className="shimmer-text">something great?</span>
             </h2>
-            <p style={{ color: 'var(--muted)', maxWidth: 420, margin: '0 auto 2.5rem', lineHeight: 1.8, fontSize: '0.95rem' }}>No jargon, no delays. Just a stunning website delivered on time — and a partner you can trust long-term.</p>
-            <Link to="/contact">
-              <motion.button whileHover={{ scale: 1.06, boxShadow: '0 0 40px rgba(108,58,255,0.5)' }} whileTap={{ scale: 0.95 }} style={{
-                padding: '1.1rem 3rem', borderRadius: 50,
-                background: 'linear-gradient(135deg, var(--violet), var(--violet-bright))',
-                border: 'none', cursor: 'pointer', color: 'white',
-                fontFamily: 'var(--font-ui)', fontSize: '0.95rem', fontWeight: 600,
-                boxShadow: '0 8px 32px rgba(108,58,255,0.4)', transition: 'box-shadow 0.3s',
-              }}>Start Your Project Today →</motion.button>
-            </Link>
+
+            <p style={{
+              fontSize: 'clamp(0.95rem, 2vw, 1.1rem)',
+              color: 'var(--muted)', lineHeight: 1.8,
+              marginBottom: '2.5rem', maxWidth: 500, margin: '0 auto 2.5rem',
+            }}>
+              Let's turn your vision into a website that works as hard as you do.
+              Free consultation, no commitment.
+            </p>
+
+            <div style={{
+              display: 'flex', gap: '1rem',
+              justifyContent: 'center', flexWrap: 'wrap',
+            }}>
+              <MagneticButton to="/contact">
+                Get a Free Quote <ArrowRight size={16} />
+              </MagneticButton>
+              <a
+                href="https://wa.me/919358383671"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <motion.button
+                  whileHover={{ scale: 1.04, borderColor: '#25d366', color: '#25d366' }}
+                  whileTap={{ scale: 0.96 }}
+                  className="btn-ghost"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}
+                >
+                  <span style={{ fontSize: '1rem' }}>💬</span>
+                  WhatsApp Us
+                </motion.button>
+              </a>
+            </div>
           </motion.div>
         </div>
       </section>
-
-      <style>{`
-        @media (max-width: 768px) {
-          .hero-scroll-hint {
-            left: max(1rem, env(safe-area-inset-left, 0px)) !important;
-            transform: none !important;
-            align-items: flex-start !important;
-          }
-          .home-stats-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 1rem !important; }
-          .home-work-grid { grid-template-columns: 1fr !important; }
-          .home-cta-outer { margin-left: 1rem !important; margin-right: 1rem !important; }
-          section.px-mobile { padding-left: 20px !important; padding-right: 20px !important; }
-        }
-      `}</style>
-    </PageTransition>
+    </motion.main>
   )
 }
