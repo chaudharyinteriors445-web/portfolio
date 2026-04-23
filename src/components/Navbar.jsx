@@ -25,6 +25,14 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', h)
   }, [])
   useEffect(() => setOpen(false), [location])
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+    }
+    return () => { document.body.style.overflow = 'unset' }
+  }, [open])
 
   return (
     <>
@@ -170,7 +178,7 @@ export default function Navbar() {
               background: 'rgba(2, 1, 8, 0.97)',
               backdropFilter: 'blur(40px)',
               display: 'flex', flexDirection: 'column',
-              alignItems: 'center', justifyContent: 'center', gap: '2rem',
+              alignItems: 'center', justifyContent: 'flex-start', gap: '2rem',
               overflowY: 'auto', paddingBottom: '2rem', paddingTop: '7rem',
             }}
           >

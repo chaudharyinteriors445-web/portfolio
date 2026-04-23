@@ -24,6 +24,33 @@ const skills = [
   { label: 'Responsive Design', color: '#00e5a0' },
   { label: 'Web Performance', color: '#f5c842' },
   { label: 'Hosting & DNS', color: '#a78bfa' },
+  // Backend & Full Stack
+  { label: 'Python', color: '#3776ab' },
+  { label: 'Django', color: '#009421', },
+  { label: 'FastAPI', color: '#009485' },
+  { label: 'Express.js', color: '#90c53f' },
+  { label: 'REST APIs', color: '#00a8cc' },
+  { label: 'GraphQL', color: '#e10098' },
+  // Databases
+  { label: 'MongoDB', color: '#13aa52' },
+  { label: 'PostgreSQL', color: '#336791' },
+  { label: 'MySQL', color: '#00758f' },
+  { label: 'Firebase', color: '#ffa400' },
+  // Cloud & DevOps
+  { label: 'AWS', color: '#ff9900' },
+  { label: 'Google Cloud', color: '#4285f4' },
+  { label: 'Azure', color: '#0078d4' },
+  { label: 'Vercel', color: '#fff8f0' },
+  { label: 'Netlify', color: '#00c7b7' },
+  { label: 'Docker', color: '#2496ed' },
+  { label: 'Kubernetes', color: '#316ce6' },
+  // Tools & Frameworks
+  { label: 'Tailwind CSS', color: '#06b6d4' },
+  { label: 'Bootstrap', color: '#7952b3' },
+  { label: 'Redux', color: '#764abc' },
+  { label: 'Zustand', color: '#8b4513' },
+  { label: 'Stripe', color: '#5469d4' },
+  { label: 'Supabase', color: '#3ecf8e' },
 ]
 
 const values = [
@@ -114,11 +141,9 @@ export default function About() {
 
   return (
     <PageTransition>
-      <section ref={heroRef} style={{ position: 'relative', overflow: 'hidden' }}>
-
-        {/* ✅ FIXED HERE */}
+      {/* HERO SECTION */}
+      <section ref={heroRef} style={{ position: 'relative', overflow: 'hidden', padding: 'clamp(7rem,16vw,11rem) var(--site-gutter) 5rem', background: 'linear-gradient(180deg,var(--deep) 0%,var(--void) 100%)', borderBottom: '1px solid var(--border)', textAlign: 'center' }}>
         <motion.div
-          animate={{ opacity: 1 }}
           style={{
             y: heroY,
             position: 'absolute',
@@ -126,11 +151,83 @@ export default function About() {
             pointerEvents: 'none',
           }}
         >
-          <div />
-          <div />
+          <div style={{ position: 'absolute', top: '20%', left: '10%', width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(circle, rgba(124,58,255,0.15), transparent 70%)', filter: 'blur(60px)' }} />
+          <div style={{ position: 'absolute', bottom: '10%', right: '5%', width: 400, height: 400, borderRadius: '50%', background: 'radial-gradient(circle, rgba(0,229,255,0.08), transparent 70%)', filter: 'blur(50px)' }} />
         </motion.div>
+        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }} style={{ position: 'relative', zIndex: 1 }}>
+          <SectionLabel>About Nexora</SectionLabel>
+          <h1 className="display-hero" style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(2rem,5.5vw,5.5rem)', lineHeight: 0.95, letterSpacing: '-0.03em', marginBottom: '1.5rem' }}>
+            We Build Premium Experiences,<br/><span className="shimmer-text">Not Just Websites.</span>
+          </h1>
+          <GoldDivider center/>
+          <p style={{ maxWidth: 560, margin: '1rem auto 0', color: 'var(--muted)', lineHeight: 1.8 }}>Since 2023, we've been crafting digital experiences that drive real business results. Every project reflects our commitment to excellence, innovation, and lasting partnerships.</p>
+        </motion.div>
+      </section>
 
-        {/* rest of your layout unchanged */}
+      {/* VALUES SECTION */}
+      <section style={{ padding: 'clamp(5rem,10vw,8rem) var(--site-gutter)', background: 'rgba(5,4,15,0.6)' }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }} style={{ textAlign: 'center', marginBottom: '3rem' }}>
+            <SectionLabel>Our Core Values</SectionLabel>
+            <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(1.8rem,3.5vw,2.5rem)', marginBottom: '1rem', letterSpacing: '-0.02em' }}>What Drives Everything We Do</h2>
+          </motion.div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '2rem' }}>
+            {values.map((v, i) => <ValueCard key={i} {...v} index={i} />)}
+          </div>
+        </div>
+      </section>
+
+      {/* SKILLS SECTION */}
+      <section style={{ padding: 'clamp(5rem,10vw,8rem) var(--site-gutter)', background: 'linear-gradient(180deg, rgba(5,4,15,0.3) 0%, rgba(10,9,24,0.5) 100%)', borderTop: '1px solid var(--border)' }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }} style={{ textAlign: 'center', marginBottom: '3rem' }}>
+            <SectionLabel>Our Expertise</SectionLabel>
+            <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(1.8rem,3.5vw,2.5rem)', marginBottom: '1rem' }}>Technologies & Skills</h2>
+          </motion.div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', justifyContent: 'center' }}>
+            {skills.map((s, i) => (
+              <motion.div key={i} initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.03, duration: 0.4 }} whileHover={{ scale: 1.08, y: -4 }} style={{ padding: '0.7rem 1.4rem', borderRadius: 50, background: 'rgba(14,12,35,0.8)', border: `1px solid ${s.color}40`, cursor: 'pointer' }}>
+                <span style={{ fontFamily: 'var(--font-ui)', fontSize: '0.85rem', fontWeight: 500, color: s.color }}>{s.label}</span>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* TIMELINE SECTION */}
+      <section style={{ padding: 'clamp(5rem,10vw,8rem) var(--site-gutter)', background: 'rgba(5,4,15,0.8)', borderTop: '1px solid var(--border)' }}>
+        <div style={{ maxWidth: 900, margin: '0 auto' }}>
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }} style={{ textAlign: 'center', marginBottom: '3rem' }}>
+            <SectionLabel>Our Journey</SectionLabel>
+            <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(1.8rem,3.5vw,2.5rem)', marginBottom: '1rem' }}>Milestones & Growth</h2>
+          </motion.div>
+          <div style={{ display: 'grid', gap: '2.5rem' }}>
+            {milestones.map((m, i) => (
+              <motion.div key={i} initial={{ opacity: 0, x: i % 2 === 0 ? -30 : 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1, duration: 0.7 }} style={{ display: 'grid', gridTemplateColumns: '100px 1fr', gap: '2rem', alignItems: 'start', paddingBottom: i < milestones.length - 1 ? '2rem' : 0, borderBottom: i < milestones.length - 1 ? '1px solid var(--border)' : 'none' }}>
+                <div style={{ paddingTop: '0.5rem' }}>
+                  <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '1.8rem', background: 'linear-gradient(90deg, var(--violet), var(--cyan))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{m.year}</div>
+                </div>
+                <div>
+                  <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '1.3rem', marginBottom: '0.5rem', color: 'var(--off-white)' }}>{m.label}</h3>
+                  <p style={{ color: 'var(--muted)', lineHeight: 1.6 }}>{m.desc}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA SECTION */}
+      <section style={{ padding: 'clamp(5rem,10vw,8rem) var(--site-gutter)', textAlign: 'center', background: 'linear-gradient(180deg, rgba(5,4,15,0.5) 0%, rgba(20,18,48,0.3) 100%)', borderTop: '1px solid var(--border)' }}>
+        <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}>
+          <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(1.8rem,3.5vw,2.5rem)', marginBottom: '1.5rem' }}>Ready to Work Together?</h2>
+          <p style={{ maxWidth: 480, margin: '0 auto 2rem', color: 'var(--muted)', fontSize: '1.05rem', lineHeight: 1.8 }}>Let's turn your vision into reality. We're here to bring your ideas to life with precision and passion.</p>
+          <Link to="/contact">
+            <motion.button whileHover={{ scale: 1.06 }} whileTap={{ scale: 0.94 }} className="btn-primary">
+              Start Your Project <ArrowRight size={18} />
+            </motion.button>
+          </Link>
+        </motion.div>
       </section>
     </PageTransition>
   )
